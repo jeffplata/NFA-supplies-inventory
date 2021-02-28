@@ -1,0 +1,79 @@
+object fmMain: TfmMain
+  Left = 299
+  Height = 378
+  Top = 174
+  Width = 752
+  Caption = 'Accounting'
+  ClientHeight = 358
+  ClientWidth = 752
+  Menu = MainMenu1
+  OnActivate = FormActivate
+  Position = poWorkAreaCenter
+  LCLVersion = '2.0.10.0'
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 23
+    Top = 335
+    Width = 752
+    Panels = <>
+  end
+  object MainMenu1: TMainMenu
+    Left = 24
+    Top = 8
+    object MenuItem3: TMenuItem
+      Caption = '&File'
+      object MenuItem4: TMenuItem
+        Action = actLogout
+      end
+      object MenuItem6: TMenuItem
+        Action = actChangePass
+      end
+      object MenuItem5: TMenuItem
+        Action = actUserManager
+      end
+      object Setdatabase1: TMenuItem
+        Action = actSetdatabase
+      end
+      object MenuItem11: TMenuItem
+        Caption = '-'
+      end
+      object MenuItem12: TMenuItem
+        Action = actExit
+      end
+    end
+    object MenuItem1: TMenuItem
+      Caption = 'Help'
+      object MenuItem2: TMenuItem
+        Action = actAbout
+      end
+    end
+  end
+  object ActionList1: TActionList
+    Left = 24
+    Top = 64
+    object actExit: TAction
+      Caption = 'E&xit'
+      OnExecute = actExitExecute
+    end
+    object actAbout: TAction
+      Caption = '&About'
+    end
+    object actSetdatabase: TAction
+      Caption = 'Set &database...'
+      OnExecute = actSetdatabaseExecute
+    end
+    object actLogout: TAction
+      Caption = 'L&ogout'
+      OnExecute = actLogoutExecute
+      OnUpdate = actLogoutUpdate
+    end
+    object actUserManager: TAction
+      Caption = 'Manage &users...'
+      OnExecute = actUserManagerExecute
+    end
+    object actChangePass: TAction
+      Caption = 'Change password...'
+      OnExecute = actChangePassExecute
+    end
+  end
+end
