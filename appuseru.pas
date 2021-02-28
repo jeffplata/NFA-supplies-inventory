@@ -84,16 +84,41 @@ var
 const
   BRK = #13#10;
 
+  // depracated
   procedure CreateTable( s: string; var msg: string );
   begin
     with TSQLQuery.Create(nil) do
     try
       DataBase := AppConnection.Connection;
+      Transaction := AppConnection.Transaction;
       SQL.Text:= s;
       try
         ExecSQL;
-        Result := True;
         AppConnection.Transaction.CommitRetaining;
+        Result := True;
+      except
+        on e: Exception do
+          begin
+            msg := e.Message;
+            AppConnection.Transaction.RollbackRetaining;
+          end;
+      end;
+    finally
+      Free;
+    end;
+  end;
+
+  procedure RunScript( s: string; var msg: string );
+  begin
+    with TSQLScript.Create(nil) do
+    try
+      DataBase := AppConnection.Connection;
+      Transaction := AppConnection.Transaction;
+      Script.Text:= s;
+      try
+        Execute;
+        AppConnection.Transaction.CommitRetaining;
+        Result := True;
       except
         on e: Exception do
           begin
@@ -116,10 +141,11 @@ begin
        '   USER_NAME Varchar(80),' +
        '   PASS Varchar(255),'     +
        '   IS_SYSTEM Integer,'     +
-       '   CONSTRAINT PK_USERS PRIMARY KEY (ID)' +
+       '   CONSTRAINT PK_USERS PRIMARY KEY (ID),' +
+       '   CONSTRAINT UNQ_USERS_1 UNIQUE (USER_NAME)' +
        ' );';
 
-  CreateTable(s, msglocal);
+  RunScript(s, msglocal);
   if msglocal = '' then
     msglocal := 'USERS table successfully created.';
   msg := msglocal;
@@ -130,27 +156,32 @@ begin
        '   ROLE_NAME Varchar(80),' +
        '   LABEL Varchar(80),'     +    
        '   IS_SYSTEM Integer,'     +
-       '   CONSTRAINT PK_ROLE PRIMARY KEY (ID)' +
+       '   CONSTRAINT PK_ROLE PRIMARY KEY (ID),' +
+       '   CONSTRAINT UNQ_ROLES_1 UNIQUE (ROLE_NAME)' +
        ' );';
 
   msglocal:= '';
-  CreateTable(s, msglocal);
+  RunScript(s, msglocal);
   if msglocal = '' then
     msglocal := 'ROLES table successfully created.';  
 
   msg := msg + BRK + msglocal;
 
-  s := ' CREATE TABLE USER_ROLES'       +
+  s := ' CREATE TABLE USER_ROLES'  +
        ' ('                        +
        '   ID Integer NOT NULL,'   +  
        '   USER_NAME Varchar(80),' +
        '   ROLE_NAME Varchar(80),' +     
        '   IS_SYSTEM Integer,'     +
        '   CONSTRAINT PK_USER_ROLES PRIMARY KEY (ID)' +
-       ' );';
+       ' );' +
+       '   ALTER TABLE USER_ROLES ADD CONSTRAINT FK_USER_ROLES_1 ' +
+       '     FOREIGN KEY (USER_NAME) REFERENCES USERS (USER_NAME) ON UPDATE CASCADE; ' +
+       '   ALTER TABLE USER_ROLES ADD CONSTRAINT FK_USER_ROLES_2 ' +
+       '     FOREIGN KEY (ROLE_NAME) REFERENCES ROLES (ROLE_NAME) ON UPDATE CASCADE;';
             
   msglocal:= '';
-  CreateTable(s, msglocal);
+  RunScript(s, msglocal);
   if msglocal = '' then
     msglocal := 'USER_ROLES table successfully created.';
 
