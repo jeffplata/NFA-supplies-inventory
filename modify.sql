@@ -5,26 +5,129 @@
 /* Project name:                                                          */
 /* Author:                                                                */
 /* Script type:           Alter database script                           */
-/* Created on:            2020-12-12 20:10                                */
+/* Created on:            2021-03-07 19:48                                */
 /* ---------------------------------------------------------------------- */
 
 
 /* ---------------------------------------------------------------------- */
-/* Drop foreign key constraints                                           */
+/* Add domains                                                            */
 /* ---------------------------------------------------------------------- */
 
-ALTER TABLE LOAN DROP CONSTRAINT MEMBER_LOAN;
+CREATE DOMAIN DOM_TXN_TYPE AS CHAR(5) CHARACTER SET UTF8;
 
 /* ---------------------------------------------------------------------- */
-/* Alter table "MEMBER"                                                   */
+/* Add table "PRODUCT"                                                    */
 /* ---------------------------------------------------------------------- */
 
-ALTER TABLE MEMBER ADD
-    IS_ACTIVE CHAR(1);
+CREATE TABLE PRODUCT (
+    PRODUCT_ID INTEGER NOT NULL,
+    PRODUCT_NAME VARCHAR(80) CHARACTER SET UTF8 NOT NULL,
+    UNIT_MEASURE VARCHAR(20) CHARACTER SET UTF8,
+    PRODUCT_CATEGORY_ID INTEGER NOT NULL,
+    CONSTRAINT PK_PRODUCT PRIMARY KEY (PRODUCT_ID),
+    CONSTRAINT UNQ_PRODUCT_1 UNIQUE (PRODUCT_NAME)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Add table "PRODUCT_CATEGORY"                                           */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE PRODUCT_CATEGORY (
+    PRODUCT_CATEGORY_ID INTEGER NOT NULL,
+    PRODUCT_CATEGORY_NAME VARCHAR(80) CHARACTER SET UTF8 NOT NULL,
+    VISUAL_SEQ INTEGER,
+    IS_SYSTEM INTEGER,
+    CONSTRAINT PK_PRODUCT_CATEGORY PRIMARY KEY (PRODUCT_CATEGORY_ID),
+    CONSTRAINT UNQ_PRODUCT_CATEGORY_1 UNIQUE (PRODUCT_CATEGORY_NAME)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Add table "LOCATION"                                                   */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE LOCATION (
+    LOCATION_ID INTEGER NOT NULL,
+    LOCATION_NAME VARCHAR(80) CHARACTER SET UTF8 NOT NULL,
+    IS_SYSTEM INTEGER,
+    CONSTRAINT PK_LOCATION PRIMARY KEY (LOCATION_ID),
+    CONSTRAINT UNQ_LOCATION_1 UNIQUE (LOCATION_NAME)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Add table "MOVEMENT"                                                   */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE MOVEMENT (
+    MOVEMENT_ID INTEGER NOT NULL,
+    MOVEMENT_DATE DATE,
+    DOC_NUMBER VARCHAR(20) CHARACTER SET UTF8,
+    QTY_IN NUMERIC(15,4),
+    QTY_OUT NUMERIC(15,4),
+    EMPLOYEE_ID INTEGER NOT NULL,
+    DEPARTMENT_ID INTEGER NOT NULL,
+    PRODUCT_ID INTEGER NOT NULL,
+    LOCATION_ID INTEGER NOT NULL,
+    MOVEMENT_TYPE_ID CHAR(5) CHARACTER SET UTF8 NOT NULL,
+    CONSTRAINT PK_MOVEMENT PRIMARY KEY (MOVEMENT_ID)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Add table "MOVEMENT_TYPE"                                              */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE MOVEMENT_TYPE (
+    MOVEMENT_TYPE_ID DOM_TXN_TYPE NOT NULL,
+    MOVEMENT_TYPE_NAME CHARACTER(40) CHARACTER SET UTF8 NOT NULL,
+    DIRECTION INTEGER,
+    IS_SYSTEM INTEGER,
+    CONSTRAINT PK_MOVEMENT_TYPE PRIMARY KEY (MOVEMENT_TYPE_ID),
+    CONSTRAINT UNQ_MOVEMENT_TYPE_1 UNIQUE (MOVEMENT_TYPE_NAME)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Add table "EMPLOYEE"                                                   */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE EMPLOYEE (
+    EMPLOYEE_ID INTEGER NOT NULL,
+    EMPLOYEE_NAME VARCHAR(80) CHARACTER SET UTF8 NOT NULL,
+    DEPARTMENT_ID INTEGER NOT NULL,
+    CONSTRAINT PK_EMPLOYEE PRIMARY KEY (EMPLOYEE_ID),
+    CONSTRAINT UNQ_EMPLOYEE_1 UNIQUE (EMPLOYEE_NAME)
+);
+
+/* ---------------------------------------------------------------------- */
+/* Add table "DEPARTMENT"                                                 */
+/* ---------------------------------------------------------------------- */
+
+CREATE TABLE DEPARTMENT (
+    DEPARTMENT_ID INTEGER NOT NULL,
+    DEPARTMENT_NAME VARCHAR(80) CHARACTER SET UTF8 NOT NULL,
+    CONSTRAINT PK_DEPARTMENT PRIMARY KEY (DEPARTMENT_ID),
+    CONSTRAINT UNQ_DEPARTMENT_1 UNIQUE (DEPARTMENT_NAME)
+);
 
 /* ---------------------------------------------------------------------- */
 /* Add foreign key constraints                                            */
 /* ---------------------------------------------------------------------- */
 
-ALTER TABLE LOAN ADD CONSTRAINT MEMBER_LOAN 
-    FOREIGN KEY (MEMBER_ID) REFERENCES MEMBER (ID);
+ALTER TABLE PRODUCT ADD CONSTRAINT PRODUCT_CATEGORY_PRODUCT 
+    FOREIGN KEY (PRODUCT_CATEGORY_ID) REFERENCES PRODUCT_CATEGORY (PRODUCT_CATEGORY_ID);
+
+ALTER TABLE MOVEMENT ADD CONSTRAINT EMPLOYEE_MOVEMENT 
+    FOREIGN KEY (EMPLOYEE_ID) REFERENCES EMPLOYEE (EMPLOYEE_ID);
+
+ALTER TABLE MOVEMENT ADD CONSTRAINT DEPARTMENT_MOVEMENT 
+    FOREIGN KEY (DEPARTMENT_ID) REFERENCES DEPARTMENT (DEPARTMENT_ID);
+
+ALTER TABLE MOVEMENT ADD CONSTRAINT PRODUCT_MOVEMENT 
+    FOREIGN KEY (PRODUCT_ID) REFERENCES PRODUCT (PRODUCT_ID);
+
+ALTER TABLE MOVEMENT ADD CONSTRAINT LOCATION_MOVEMENT 
+    FOREIGN KEY (LOCATION_ID) REFERENCES LOCATION (LOCATION_ID);
+
+ALTER TABLE MOVEMENT ADD CONSTRAINT MOVEMENT_TYPE_MOVEMENT 
+    FOREIGN KEY (MOVEMENT_TYPE_ID) REFERENCES MOVEMENT_TYPE (MOVEMENT_TYPE_ID);
+
+ALTER TABLE EMPLOYEE ADD CONSTRAINT DEPARTMENT_EMPLOYEE 
+    FOREIGN KEY (DEPARTMENT_ID) REFERENCES DEPARTMENT (DEPARTMENT_ID);

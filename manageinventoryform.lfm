@@ -1,0 +1,84 @@
+object frmManageInventory: TfrmManageInventory
+  Left = 467
+  Height = 310
+  Top = 236
+  Width = 533
+  Caption = 'Manage Inventory'
+  ClientHeight = 310
+  ClientWidth = 533
+  OnClose = FormClose
+  OnCreate = FormCreate
+  LCLVersion = '2.0.10.0'
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 533
+    Caption = 'ToolBar1'
+    ShowCaptions = True
+    TabOrder = 0
+    object ToolButton1: TToolButton
+      Left = 1
+      Top = 2
+      Action = actAdd
+    end
+    object ToolButton2: TToolButton
+      Left = 31
+      Top = 2
+      Action = actEdit
+    end
+    object ToolButton3: TToolButton
+      Left = 59
+      Top = 2
+      Action = actDelete
+    end
+    object ToolButton4: TToolButton
+      Left = 100
+      Height = 22
+      Top = 2
+      Caption = 'ToolButton4'
+      Style = tbsSeparator
+    end
+    object ToolButton5: TToolButton
+      Left = 108
+      Top = 2
+      Action = actClose
+    end
+  end
+  object DBGrid1: TDBGrid
+    Left = 0
+    Height = 284
+    Top = 26
+    Width = 533
+    Align = alClient
+    Color = clWindow
+    Columns = <>
+    DataSource = DataSource1
+    ReadOnly = True
+    TabOrder = 1
+  end
+  object ActionList1: TActionList
+    Left = 20
+    Top = 91
+    object actAdd: TAction
+      Caption = 'Add'
+      OnExecute = actAddExecute
+    end
+    object actEdit: TAction
+      Caption = 'Edit'
+      OnExecute = actEditExecute
+    end
+    object actDelete: TAction
+      Caption = 'Delete'
+      OnExecute = actDeleteExecute
+    end
+    object actClose: TAction
+      Caption = 'Close'
+      OnExecute = actCloseExecute
+    end
+  end
+  object DataSource1: TDataSource
+    Left = 104
+    Top = 91
+  end
+end

@@ -26,21 +26,30 @@
       <FormatVersion Value="2"/>
       <Modes Count="0"/>
     </RunParams>
-    <RequiredPackages Count="4">
+    <RequiredPackages Count="7">
       <Item1>
-        <PackageName Value="virtualtreeview_package"/>
+        <PackageName Value="laz_fpspreadsheet_visual"/>
       </Item1>
       <Item2>
-        <PackageName Value="pascalscript"/>
+        <PackageName Value="TDI"/>
       </Item2>
       <Item3>
-        <PackageName Value="FCL"/>
+        <PackageName Value="KControlsLaz"/>
       </Item3>
       <Item4>
-        <PackageName Value="LCL"/>
+        <PackageName Value="virtualtreeview_package"/>
       </Item4>
+      <Item5>
+        <PackageName Value="pascalscript"/>
+      </Item5>
+      <Item6>
+        <PackageName Value="FCL"/>
+      </Item6>
+      <Item7>
+        <PackageName Value="LCL"/>
+      </Item7>
     </RequiredPackages>
-    <Units Count="15">
+    <Units Count="24">
       <Unit0>
         <Filename Value="SuppliesInventory.pas"/>
         <IsPartOfProject Value="True"/>
@@ -51,7 +60,6 @@
         <ComponentName Value="fmMain"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="mainForm"/>
       </Unit1>
       <Unit2>
         <Filename Value="appconnectionu.pas"/>
@@ -135,6 +143,68 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="UserChangePassForm"/>
       </Unit14>
+      <Unit15>
+        <Filename Value="issuanceform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmIssuance"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="IssuanceForm"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="receiptsform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmReceipts"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ReceiptsForm"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="manageinventoryform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmManageInventory"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ManageInventoryForm"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="inventorydm.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="dmInventory"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="DataModule"/>
+        <UnitName Value="inventoryDM"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="productcategoryform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmProductCategory"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ProductCategoryForm"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="dataset_helper.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="bookmarklist_helper.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="BookmarkList_helper"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="importform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmImport"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="importForm"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="sqlwhereclause.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="SQLWhereClause"/>
+      </Unit23>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

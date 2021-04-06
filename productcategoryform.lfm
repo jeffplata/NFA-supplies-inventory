@@ -1,0 +1,181 @@
+object frmProductCategory: TfrmProductCategory
+  Left = 583
+  Height = 240
+  Top = 271
+  Width = 385
+  Caption = 'Product Category'
+  ClientHeight = 240
+  ClientWidth = 385
+  OnClose = FormClose
+  OnCreate = FormCreate
+  LCLVersion = '2.0.10.0'
+  object DBGrid1: TDBGrid
+    Left = 0
+    Height = 214
+    Top = 26
+    Width = 385
+    Align = alClient
+    Color = clWindow
+    Columns = <>
+    DataSource = DataSource1
+    FixedCols = 0
+    Options = [dgEditing, dgTitles, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgConfirmDelete, dgCancelOnExit, dgRowHighlight]
+    PopupMenu = PopupMenu1
+    ReadOnly = True
+    Scrollbars = ssAutoBoth
+    TabOrder = 0
+    TitleStyle = tsNative
+    OnDblClick = DBGrid1DblClick
+  end
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 385
+    Caption = 'ToolBar1'
+    ShowCaptions = True
+    TabOrder = 1
+    object ToolButton1: TToolButton
+      Left = 1
+      Top = 2
+      Action = actAdd
+    end
+    object ToolButton2: TToolButton
+      Left = 31
+      Top = 2
+      Action = actEdit
+    end
+    object ToolButton3: TToolButton
+      Left = 59
+      Top = 2
+      Action = actDelete
+    end
+    object ToolButton4: TToolButton
+      Left = 100
+      Height = 22
+      Top = 2
+      Caption = 'ToolButton4'
+      Style = tbsDivider
+    end
+    object ToolButton5: TToolButton
+      Left = 328
+      Top = 2
+      Action = actClose
+    end
+    object ToolButton6: TToolButton
+      Left = 105
+      Top = 2
+      Caption = 'Tasks'
+      DropdownMenu = DropDownMenu1
+      Style = tbsButtonDrop
+    end
+    object ToolButton9: TToolButton
+      Left = 152
+      Height = 22
+      Top = 2
+      Caption = 'ToolButton9'
+      Style = tbsSeparator
+    end
+    object edtFilter: TEditButton
+      Left = 160
+      Height = 23
+      Top = 2
+      Width = 160
+      ButtonWidth = 23
+      Flat = True
+      Images = fmMain.ImageList1
+      ImageIndex = 3
+      MaxLength = 0
+      NumGlyphs = 1
+      OnChange = edtFilterChange
+      OnClick = edtFilterClick
+      PasswordChar = #0
+      TabOrder = 0
+      TextHint = '(filter)'
+    end
+    object ToolButton7: TToolButton
+      Left = 320
+      Height = 22
+      Top = 2
+      Caption = 'ToolButton7'
+      Style = tbsSeparator
+    end
+    object ToolButton8: TToolButton
+      Left = 365
+      Height = 22
+      Top = 2
+      Caption = 'ToolButton8'
+      Style = tbsSeparator
+    end
+  end
+  object ActionList1: TActionList
+    Left = 48
+    Top = 119
+    object actAdd: TAction
+      Caption = 'Add'
+      OnExecute = actAddExecute
+      ShortCut = 45
+    end
+    object actEdit: TAction
+      Caption = 'Edit'
+      OnExecute = actEditExecute
+      ShortCut = 113
+    end
+    object actDelete: TAction
+      Caption = 'Delete'
+      OnExecute = actDeleteExecute
+      ShortCut = 16430
+    end
+    object actClose: TAction
+      Caption = 'Close'
+      OnExecute = actCloseExecute
+    end
+    object actImport: TAction
+      Caption = 'Import'
+      OnExecute = actImportExecute
+    end
+    object actExport: TAction
+      Caption = 'Export'
+    end
+    object actCheckAll: TAction
+      Caption = 'Check all'
+      OnExecute = actCheckAllExecute
+    end
+    object actUncheckAll: TAction
+      Caption = 'Uncheck all'
+      OnExecute = actUncheckAllExecute
+    end
+    object actClearFilter: TAction
+      OnExecute = actClearFilterExecute
+      OnUpdate = actClearFilterUpdate
+    end
+  end
+  object DataSource1: TDataSource
+    Left = 132
+    Top = 119
+  end
+  object DropDownMenu1: TPopupMenu
+    Left = 56
+    Top = 56
+    object MenuItem1: TMenuItem
+      Action = actImport
+    end
+    object MenuItem2: TMenuItem
+      Action = actExport
+    end
+  end
+  object PopupMenu1: TPopupMenu
+    Left = 207
+    Top = 59
+    object MenuItem3: TMenuItem
+      Action = actCheckAll
+    end
+    object MenuItem4: TMenuItem
+      Action = actUncheckAll
+    end
+  end
+  object OpenDialog1: TOpenDialog
+    Left = 240
+    Top = 134
+  end
+end

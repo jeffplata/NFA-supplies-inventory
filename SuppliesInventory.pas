@@ -7,9 +7,11 @@ uses
   cthreads,
   {$ENDIF}{$ENDIF}
   Interfaces, // this includes the LCL widgetset
-  Forms, mainForm, appConnectionU, mainDM, myUtils, changedatabaseform,
+  Forms, mainform, appConnectionU, mainDM, myUtils, changedatabaseform,
   pascalscript, appUserU, UserLoginForm, hilogeneratorU, UserManagerForm,
-  UserManagerU, user_BOM, RoleEditForm, base_BOM, UserChangePassForm;
+  UserManagerU, user_BOM, RoleEditForm, base_BOM, UserChangePassForm,
+  IssuanceForm, ReceiptsForm, ManageInventoryForm, inventoryDM,
+  ProductCategoryForm, dataset_helper, BookmarkList_helper, importForm, SQLWhereClause;
 
 {$R *.res}
 
@@ -19,6 +21,7 @@ begin
   Application.Initialize;
   Application.CreateForm(TdmMain, dmMain);
   Application.CreateForm(TfmMain, fmMain);
+  Application.CreateForm(TdmInventory, dmInventory);
   Application.Run;
 end.
 

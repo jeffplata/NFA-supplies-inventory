@@ -1,0 +1,74 @@
+object frmIssuance: TfrmIssuance
+  Left = 537
+  Height = 240
+  Top = 198
+  Width = 320
+  Caption = 'Inventory Issuances'
+  ClientHeight = 240
+  ClientWidth = 320
+  OnClose = FormClose
+  LCLVersion = '2.0.10.0'
+  object ToolBar1: TToolBar
+    Left = 0
+    Height = 26
+    Top = 0
+    Width = 320
+    Caption = 'ToolBar1'
+    ShowCaptions = True
+    TabOrder = 0
+    object ToolButton1: TToolButton
+      Left = 1
+      Top = 2
+      Action = actAdd
+    end
+    object ToolButton2: TToolButton
+      Left = 31
+      Top = 2
+      Action = actEdit
+    end
+    object ToolButton3: TToolButton
+      Left = 59
+      Top = 2
+      Action = actDelete
+    end
+    object ToolButton4: TToolButton
+      Left = 100
+      Height = 22
+      Top = 2
+      Caption = 'ToolButton4'
+      Style = tbsSeparator
+    end
+    object ToolButton5: TToolButton
+      Left = 108
+      Top = 2
+      Action = actClose
+    end
+  end
+  object DBGrid1: TDBGrid
+    Left = 0
+    Height = 214
+    Top = 26
+    Width = 320
+    Align = alClient
+    Color = clWindow
+    Columns = <>
+    TabOrder = 1
+  end
+  object ActionList1: TActionList
+    Left = 48
+    Top = 119
+    object actAdd: TAction
+      Caption = 'Add'
+    end
+    object actEdit: TAction
+      Caption = 'Edit'
+    end
+    object actDelete: TAction
+      Caption = 'Delete'
+    end
+    object actClose: TAction
+      Caption = 'Close'
+      OnExecute = actCloseExecute
+    end
+  end
+end

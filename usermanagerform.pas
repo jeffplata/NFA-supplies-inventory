@@ -11,9 +11,9 @@ uses
 type       
   TArrayOfDatasets = array of TSQLQuery;
 
-  PUserTreeData = ^TUser;
-  PAssignedRoleTreeData = ^TAssignedRole;
-  PRoleTreeData = ^TRole;
+  //PUserTreeData = ^TUser;
+  //PAssignedRoleTreeData = ^TAssignedRole;
+  //PRoleTreeData = ^TRole;
 
   { TfrmUserManager }
 

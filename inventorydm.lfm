@@ -1,0 +1,22 @@
+object dmInventory: TdmInventory
+  OnCreate = DataModuleCreate
+  OnDestroy = DataModuleDestroy
+  OldCreateOrder = False
+  Height = 284
+  HorizontalOffset = 307
+  VerticalOffset = 181
+  Width = 435
+  object qryProduct: TSQLQuery
+    FieldDefs = <>
+    Params = <>
+    Left = 48
+    Top = 56
+  end
+  object qryProductCategory: TSQLQuery
+    OnUpdateError = qryProductCategoryUpdateError
+    FieldDefs = <>
+    Params = <>
+    Left = 48
+    Top = 120
+  end
+end
