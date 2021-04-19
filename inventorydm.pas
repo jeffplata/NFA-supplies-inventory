@@ -5,7 +5,8 @@ unit inventoryDM;
 interface
 
 uses
-  Classes, SysUtils, DBGrids, dataset_helper, SQLDB, DB, BufDataset;
+  Classes, SysUtils, DBGrids, dataset_helper, SQLWhereClause, SQLDB, DB,
+  BufDataset;
 
 type
 
@@ -27,6 +28,7 @@ type
   public            
     temp_id : integer;
     DatasetList: TSQLQueryList;
+    SQLWhereProductCategory: TSQLWhereClause;
     class procedure Open;
     procedure Import(ATable: TDataset; AData: TVariantArray1; var msg: string);
     procedure EditAndCommit(ATable: TDataSet; PKname: string; var msg: string;
@@ -64,6 +66,7 @@ begin
   qryProductCategory.SQL.add('  from PRODUCT_CATEGORY p ');
   qryProductCategory.SQL.add('  order by p.PRODUCT_CATEGORY_ID');
   //qryProductCategory.BeforeDelete:= @qryProductCategoryBeforeDelete;
+  SQLWhereProductCategory:= TSQLWhereClause.Create(qryProductCategory);
 
   qryProduct.DataBase := dmMain.Connection.Connection;
   qryProduct.SQL.add('select p.PRODUCT_ID, p.PRODUCT_NAME, p.UNIT_MEASURE, ');

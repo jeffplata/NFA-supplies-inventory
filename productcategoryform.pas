@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, DB, Forms, Controls, Graphics, Dialogs, ActnList, DBGrids,
-  ComCtrls, Menus, StdCtrls, EditBtn;
+  ComCtrls, Menus, StdCtrls, EditBtn, ExtCtrls;
 
 type
 
@@ -33,6 +33,7 @@ type
     MenuItem4: TMenuItem;
     OpenDialog1: TOpenDialog;
     PopupMenu1: TPopupMenu;
+    Timer1: TTimer;
     ToolBar1: TToolBar;
     ToolButton1: TToolButton;
     ToolButton2: TToolButton;
@@ -57,9 +58,9 @@ type
     procedure DBGrid1UserCheckboxState(Sender: TObject; Column: TColumn;
       var AState: TCheckboxState);
     procedure edtFilterChange(Sender: TObject);
-    procedure edtFilterClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure Timer1Timer(Sender: TObject);
   private
     CheckList: TBookmarkList;         
     temp_id: integer;
@@ -249,12 +250,10 @@ begin
       //      = where PRODUCT_CATEGORY_NAME containing :PRODUCT_CATEGORY_NAME
       //  whereclauses1.Equals('PRODUCT_CATEGORY_NAME', edtFilter.Text)
       //      = where PRODUCT_CATEGORY_NAME = :PRODUCT_CATEGORY_NAME
-    end;
-end;
-
-procedure TfrmProductCategory.edtFilterClick(Sender: TObject);
-begin
-  ShowMessage(dmInventory.qryProductCategory.SQL.Text);
+      Timer1.Enabled:= True;
+    end
+  else
+    Timer1.Enabled := False;
 end;
 
 procedure TfrmProductCategory.FormClose(Sender: TObject;
@@ -279,8 +278,20 @@ begin
   DBGrid1.OnUserCheckboxState:= @DBGrid1UserCheckboxState;
   DBGrid1.AutoAdjustColumns;
 
+  //setup TWhereClause
+
+
   edtFilter.button.Action := actClearFilter;
   temp_id := -1;
+end;
+
+procedure TfrmProductCategory.Timer1Timer(Sender: TObject);
+begin 
+  Timer1.Enabled:= False;
+  Showmessage('timer action reached.');
+  //ShowMessage(dmInventory.qryProductCategory.SQL.Text);
+
+  dmInventory.SQLWhereProductCategory.AndCondition( 'PRODUCT_CATEGORY_NAME containing '''+edtFilter.Text+'''' );
 end;
 
 procedure TfrmProductCategory.SetChecked(AChecked: Boolean);

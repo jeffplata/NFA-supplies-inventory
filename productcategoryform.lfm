@@ -88,7 +88,6 @@ object frmProductCategory: TfrmProductCategory
       MaxLength = 0
       NumGlyphs = 1
       OnChange = edtFilterChange
-      OnClick = edtFilterClick
       PasswordChar = #0
       TabOrder = 0
       TextHint = '(filter)'
@@ -166,7 +165,7 @@ object frmProductCategory: TfrmProductCategory
   end
   object PopupMenu1: TPopupMenu
     Left = 207
-    Top = 59
+    Top = 56
     object MenuItem3: TMenuItem
       Action = actCheckAll
     end
@@ -177,5 +176,12 @@ object frmProductCategory: TfrmProductCategory
   object OpenDialog1: TOpenDialog
     Left = 240
     Top = 134
+  end
+  object Timer1: TTimer
+    Enabled = False
+    Interval = 2000
+    OnTimer = Timer1Timer
+    Left = 336
+    Top = 56
   end
 end
