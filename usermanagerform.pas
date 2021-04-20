@@ -152,7 +152,7 @@ begin
     FqRoles.SQLConnection.Transaction.CommitRetaining;
 
     cmbRoles.AddItem(FqRoles.FieldByName('role_name').AsString,
-      TObject(FqRoles.FieldByName('ID').AsInteger));
+      TObject(PtrUInt( FqRoles.FieldByName('ID').AsInteger )));
   end;
 end;
 
@@ -268,7 +268,7 @@ begin
     begin
       while not eof do
       begin
-        cmbRoles.AddItem(FieldByName('role_name').AsString, TObject(FieldByName('ID').AsInteger));
+        cmbRoles.AddItem(FieldByName('role_name').AsString, TObject(PtrUInt( FieldByName('ID').AsInteger )));
         Next;
       end;
       First;

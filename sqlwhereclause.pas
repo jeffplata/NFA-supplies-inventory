@@ -71,6 +71,7 @@ var
 begin
   if FWhereClause <> '' then CondOperator := AOperator else CondOperator:= '';
   newWhereClause := FWhereClause + CondOperator + ACondition;
+  if FWhereClause = '' then FDataset.SQL ;
 end;
 
 procedure TSQLWhereClause.OrCondition(ACondition: string);

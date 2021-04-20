@@ -81,6 +81,7 @@ end;
 procedure TdmInventory.DataModuleDestroy(Sender: TObject);
 begin
   DatasetList.Free;
+  SQLWhereProductCategory.Free;
 end;
 
 procedure TdmInventory.qryProductCategoryBeforeDelete(DataSet: TDataSet);

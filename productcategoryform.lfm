@@ -1,5 +1,5 @@
 object frmProductCategory: TfrmProductCategory
-  Left = 583
+  Left = 584
   Height = 240
   Top = 271
   Width = 385
@@ -8,7 +8,7 @@ object frmProductCategory: TfrmProductCategory
   ClientWidth = 385
   OnClose = FormClose
   OnCreate = FormCreate
-  LCLVersion = '2.0.10.0'
+  LCLVersion = '2.0.12.0'
   object DBGrid1: TDBGrid
     Left = 0
     Height = 214
@@ -58,7 +58,7 @@ object frmProductCategory: TfrmProductCategory
       Style = tbsDivider
     end
     object ToolButton5: TToolButton
-      Left = 328
+      Left = 327
       Top = 2
       Action = actClose
     end
@@ -70,14 +70,14 @@ object frmProductCategory: TfrmProductCategory
       Style = tbsButtonDrop
     end
     object ToolButton9: TToolButton
-      Left = 152
+      Left = 151
       Height = 22
       Top = 2
       Caption = 'ToolButton9'
       Style = tbsSeparator
     end
     object edtFilter: TEditButton
-      Left = 160
+      Left = 159
       Height = 23
       Top = 2
       Width = 160
@@ -93,14 +93,14 @@ object frmProductCategory: TfrmProductCategory
       TextHint = '(filter)'
     end
     object ToolButton7: TToolButton
-      Left = 320
+      Left = 319
       Height = 22
       Top = 2
       Caption = 'ToolButton7'
       Style = tbsSeparator
     end
     object ToolButton8: TToolButton
-      Left = 365
+      Left = 364
       Height = 22
       Top = 2
       Caption = 'ToolButton8'

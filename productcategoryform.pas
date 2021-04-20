@@ -288,10 +288,8 @@ end;
 procedure TfrmProductCategory.Timer1Timer(Sender: TObject);
 begin 
   Timer1.Enabled:= False;
-  Showmessage('timer action reached.');
-  //ShowMessage(dmInventory.qryProductCategory.SQL.Text);
-
   dmInventory.SQLWhereProductCategory.AndCondition( 'PRODUCT_CATEGORY_NAME containing '''+edtFilter.Text+'''' );
+  ShowMessage(dmInventory.qryProductCategory.SQL.Text);
 end;
 
 procedure TfrmProductCategory.SetChecked(AChecked: Boolean);
