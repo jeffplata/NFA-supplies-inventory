@@ -13,7 +13,6 @@ object dmInventory: TdmInventory
     Top = 56
   end
   object qryProductCategory: TSQLQuery
-    OnUpdateError = qryProductCategoryUpdateError
     FieldDefs = <>
     Params = <>
     Left = 48

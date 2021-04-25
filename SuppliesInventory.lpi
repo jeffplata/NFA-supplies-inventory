@@ -46,7 +46,7 @@
         <PackageName Value="LCL"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="24">
+    <Units Count="25">
       <Unit0>
         <Filename Value="SuppliesInventory.pas"/>
         <IsPartOfProject Value="True"/>
@@ -202,6 +202,13 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="SQLWhereClause"/>
       </Unit23>
+      <Unit24>
+        <Filename Value="exportform.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmExport"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="exportForm"/>
+      </Unit24>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

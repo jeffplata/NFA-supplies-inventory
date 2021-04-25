@@ -5,7 +5,7 @@ unit inventoryDM;
 interface
 
 uses
-  Classes, SysUtils, DBGrids, dataset_helper, SQLWhereClause, SQLDB, DB,
+  Classes, SysUtils, DBGrids, dataset_helper, SQLDB, DB,
   BufDataset;
 
 type
@@ -20,15 +20,14 @@ type
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
     procedure qryProductCategoryBeforeDelete(DataSet: TDataSet);
-    procedure qryProductCategoryUpdateError(Sender: TObject;
+    procedure qryImportApplyUpdateError(Sender: TObject;
       DataSet: TCustomBufDataset; E: EUpdateError; UpdateKind: TUpdateKind;
-      var Response: TResolverResponse);
+  var Response: TResolverResponse);
   private
     UpdateErrorMessage, UpdateErrorValue, UpdateErrorField: string;
   public            
     temp_id : integer;
     DatasetList: TSQLQueryList;
-    SQLWhereProductCategory: TSQLWhereClause;
     class procedure Open;
     procedure Import(ATable: TDataset; AData: TVariantArray1; var msg: string);
     procedure EditAndCommit(ATable: TDataSet; PKname: string; var msg: string;
@@ -37,8 +36,8 @@ type
     procedure ApplyAndCommit(ATable: TDataSet);
     procedure CancelAndRollback(ATable: TDataSet);
     function CanEditProductCategory: Boolean;
-    function CanModifyRecord(ATable: TDataSet): Boolean; 
-    procedure OpenProductsCategory;
+    function CanModifyRecord(ATable: TDataSet): Boolean;
+    procedure OpenProductsCategory(const parameters: TVariantArray1);
     procedure CloseProductsCategory;
     procedure OpenProducts;
     procedure CloseProducts;
@@ -50,10 +49,14 @@ var
 
 const
   CONST_CANNOT_EDIT = 'Editing/Deleting not allowed for this record.';
+  C_SQL_PRODUCT_CATEGORY = 'SELECT p.PRODUCT_CATEGORY_ID, p.PRODUCT_CATEGORY_NAME, p.VISUAL_SEQ, p.IS_SYSTEM '+
+    'from PRODUCT_CATEGORY p '+
+    #13#10'where (cast(:PRODUCT_CATEGORY_NAME as varchar(80)) is null) or (p.PRODUCT_CATEGORY_NAME containing :PRODUCT_CATEGORY_NAME) '+
+    #13#10'order by p.VISUAL_SEQ, p.PRODUCT_CATEGORY_ID ';
 
 implementation
 
-uses mainDM, BookmarkList_helper, Variants, Contnrs, Forms, Dialogs, Controls;
+uses mainDM, Variants, Forms, Dialogs, Controls;
 
 {$R *.lfm}
 
@@ -62,11 +65,11 @@ uses mainDM, BookmarkList_helper, Variants, Contnrs, Forms, Dialogs, Controls;
 procedure TdmInventory.DataModuleCreate(Sender: TObject);
 begin
   qryProductCategory.DataBase := dmMain.Connection.Connection; 
-  qryProductCategory.SQL.add('select p.PRODUCT_CATEGORY_ID, p.PRODUCT_CATEGORY_NAME, p.VISUAL_SEQ, p.IS_SYSTEM ');
-  qryProductCategory.SQL.add('  from PRODUCT_CATEGORY p ');
-  qryProductCategory.SQL.add('  order by p.PRODUCT_CATEGORY_ID');
+  //qryProductCategory.SQL.add('select p.PRODUCT_CATEGORY_ID, p.PRODUCT_CATEGORY_NAME, p.VISUAL_SEQ, p.IS_SYSTEM ');
+  //qryProductCategory.SQL.add('  from PRODUCT_CATEGORY p ');
+  //qryProductCategory.SQL.add('  order by p.PRODUCT_CATEGORY_ID');
   //qryProductCategory.BeforeDelete:= @qryProductCategoryBeforeDelete;
-  SQLWhereProductCategory:= TSQLWhereClause.Create(qryProductCategory);
+  qryProductCategory.SQL.Add(C_SQL_PRODUCT_CATEGORY);
 
   qryProduct.DataBase := dmMain.Connection.Connection;
   qryProduct.SQL.add('select p.PRODUCT_ID, p.PRODUCT_NAME, p.UNIT_MEASURE, ');
@@ -81,20 +84,17 @@ end;
 procedure TdmInventory.DataModuleDestroy(Sender: TObject);
 begin
   DatasetList.Free;
-  SQLWhereProductCategory.Free;
 end;
 
 procedure TdmInventory.qryProductCategoryBeforeDelete(DataSet: TDataSet);
 begin
   if not CanModifyRecord(DataSet) then
   begin
-    //ShowMessage(CONST_CAMNNOT_EDIT);
-    //abort;
     raise Exception.Create(CONST_CANNOT_EDIT);
   end;
 end;
 
-procedure TdmInventory.qryProductCategoryUpdateError(Sender: TObject;
+procedure TdmInventory.qryImportApplyUpdateError(Sender: TObject;
   DataSet: TCustomBufDataset; E: EUpdateError; UpdateKind: TUpdateKind;
   var Response: TResolverResponse);
 begin
@@ -113,10 +113,13 @@ procedure TdmInventory.Import(ATable: TDataset; AData: TVariantArray1; var msg: 
 var
   visual_seq_fld: TField;
   newkey, i, j: Integer;
+  vUpdateError: TResolverErrorEvent;
 begin
   UpdateErrorField:= 'PRODUCT_CATEGORY_NAME';
   UpdateErrorMessage:= '';
   UpdateErrorValue:= '';
+  vUpdateError:= TSQLQuery(ATable).OnUpdateError;
+  TSQLQuery(ATable).OnUpdateError:= @qryImportApplyUpdateError;
 
   visual_seq_fld := ATable.FindField('VISUAL_SEQ');
   newkey := 0;
@@ -144,11 +147,32 @@ begin
         msg := UpdateErrorMessage;
       CancelAndRollback(ATable);
     end;
+  TSQLQuery(ATable).OnUpdateError:= vUpdateError;
 end;
 
-procedure TdmInventory.OpenProductsCategory;
+procedure TdmInventory.OpenProductsCategory(const parameters: TVariantArray1);
+var
+  _params : TVariantArray1;
 begin
-  qryProductCategory.Open;
+  if length(parameters) = 0 then
+    _params := [null]
+  else
+    _params := parameters;
+  with qryProductCategory do
+  begin
+    ParamByName('PRODUCT_CATEGORY_NAME').Value:= _params[0];
+  end;
+
+  // IMPORTANT NOTE
+  qryProductCategory.IndexFieldNames:= 'VISUAL_SEQ';
+  if qryProductCategory.Active then
+    begin
+      qryProductCategory.IndexFieldNames:='';
+      qryProductCategory.Refresh;  
+      qryProductCategory.IndexFieldNames:= 'VISUAL_SEQ';
+    end
+  else
+    qryProductCategory.Open;
 end;
 
 procedure TdmInventory.CloseProductsCategory;

@@ -5,8 +5,8 @@ unit ProductCategoryForm;
 interface
 
 uses
-  Classes, SysUtils, DB, Forms, Controls, Graphics, Dialogs, ActnList, DBGrids,
-  ComCtrls, Menus, StdCtrls, EditBtn, ExtCtrls;
+  Classes, SysUtils, DB, Forms, Controls, Graphics, Dialogs, ActnList,
+  DBGrids, ComCtrls, Menus, StdCtrls, EditBtn, ExtCtrls;
 
 type
 
@@ -21,6 +21,8 @@ type
     actExport: TAction;
     actCheckAll: TAction;
     actClearFilter: TAction;
+    actMoveUp: TAction;
+    actMoveDown: TAction;
     actUncheckAll: TAction;
     ActionList1: TActionList;
     DataSource1: TDataSource;
@@ -31,11 +33,16 @@ type
     DropDownMenu1: TPopupMenu;
     MenuItem3: TMenuItem;
     MenuItem4: TMenuItem;
+    MenuItem5: TMenuItem;
+    MenuItem6: TMenuItem;
+    MenuItem7: TMenuItem;
     OpenDialog1: TOpenDialog;
     PopupMenu1: TPopupMenu;
     Timer1: TTimer;
     ToolBar1: TToolBar;
     ToolButton1: TToolButton;
+    ToolButton10: TToolButton;
+    ToolButton11: TToolButton;
     ToolButton2: TToolButton;
     ToolButton3: TToolButton;
     ToolButton4: TToolButton;
@@ -51,7 +58,10 @@ type
     procedure actCloseExecute(Sender: TObject);
     procedure actDeleteExecute(Sender: TObject);
     procedure actEditExecute(Sender: TObject);
+    procedure actExportExecute(Sender: TObject);
     procedure actImportExecute(Sender: TObject);
+    procedure actMoveDownExecute(Sender: TObject);
+    procedure actMoveUpExecute(Sender: TObject);
     procedure actUncheckAllExecute(Sender: TObject);
     procedure DBGrid1CellClick(Column: TColumn);
     procedure DBGrid1DblClick(Sender: TObject);
@@ -77,7 +87,7 @@ var
 
 implementation
 
-uses inventoryDM, importForm, Grids;
+uses inventoryDM, importForm, exportForm, Grids;
 
 {$R *.lfm}
 
@@ -115,6 +125,7 @@ end;
 procedure TfrmProductCategory.actClearFilterExecute(Sender: TObject);
 begin
   edtFilter.Clear;
+  //dmInventory.OpenProductsCategory([]);
 end;
 
 procedure TfrmProductCategory.actClearFilterUpdate(Sender: TObject);
@@ -208,11 +219,68 @@ begin
     end;
 end;
 
+procedure TfrmProductCategory.actExportExecute(Sender: TObject);
+//var
+//  bm: tbookmark;
+begin
+  //bm :=  DataSource1.DataSet.Bookmark;
+  TfrmExport.OpenForm(DataSource1.DataSet);
+  //DataSource1.DataSet.GotoBookmark(bm);
+end;
+
 procedure TfrmProductCategory.actImportExecute(Sender: TObject);
 begin
   TfrmImport.OpenForm;
-  //OpenDialog1.Filter:= 'Excel files|*.xlsx;*.xls';
-  //OpenDialog1.Execute;
+end;
+
+procedure TfrmProductCategory.actMoveDownExecute(Sender: TObject);
+var
+  table : tdataset;
+  bm, bm2: tbookmark;
+  seq_id, seq_id2: LongInt;
+  movingUp : boolean;
+
+  function SystemData: boolean;
+  begin
+    Result := table.fieldbyname('IS_SYSTEM').asinteger = 1;
+    if result then
+      Showmessage(''''+table.fieldbyname('PRODUCT_CATEGORY_NAME').asstring+''' cannot be moved.');
+  end;
+
+begin
+
+  table := datasource1.dataset;
+  if SystemData then exit; //<==
+
+  movingUp := (sender = actMoveUp);
+  bm := table.Bookmark;
+  seq_id := table.fieldbyname('VISUAL_SEQ').AsInteger;
+
+  if movingUp then table.prior
+  else table.next;
+
+  if table.eof or table.bof then exit; //<==
+  if SystemData then exit; //<==
+  seq_id2 := table.fieldbyname('VISUAL_SEQ').AsInteger;
+  table.edit;
+  table.fieldbyname('VISUAL_SEQ').AsInteger := seq_id;
+  table.post;
+  bm2 := table.bookmark;
+  table.GotoBookmark(bm);
+  table.edit;
+  table.FieldByName('VISUAL_SEQ').AsInteger:= seq_id2;
+  table.post;
+  //table.gotobookmark(bm2);
+
+  dmInventory.ApplyAndCommit(table);
+  table.gotobookmark(bm);
+  //dmInventory.qryProductCategory.;
+
+end;
+
+procedure TfrmProductCategory.actMoveUpExecute(Sender: TObject);
+begin
+  actMoveDownExecute(Sender);
 end;
 
 procedure TfrmProductCategory.actUncheckAllExecute(Sender: TObject);
@@ -242,18 +310,21 @@ end;
 
 procedure TfrmProductCategory.edtFilterChange(Sender: TObject);
 begin
-  if edtFilter.Text <> '' then
+  //if edtFilter.Text <> '' then
+  //  Timer1.Enabled:= True;
+  //else
+  //  begin
+  //    Timer1.Enabled := False;
+  //    CheckList.Clear;
+  //    dmInventory.OpenProductsCategory([]);
+  //  end;
+
+  timer1.enabled := (edtFilter.text <> '');
+  if edtFilter.text = '' then
     begin
-      //run query with filter
-      //Add condition to TWhereClauses
-      //  whereclauses1.Containing('PRODUCT_CATEGORY_NAME', edtFilter.Text)
-      //      = where PRODUCT_CATEGORY_NAME containing :PRODUCT_CATEGORY_NAME
-      //  whereclauses1.Equals('PRODUCT_CATEGORY_NAME', edtFilter.Text)
-      //      = where PRODUCT_CATEGORY_NAME = :PRODUCT_CATEGORY_NAME
-      Timer1.Enabled:= True;
-    end
-  else
-    Timer1.Enabled := False;
+      checklist.clear;
+      dminventory.OpenProductsCategory([]);
+    end;
 end;
 
 procedure TfrmProductCategory.FormClose(Sender: TObject;
@@ -263,11 +334,12 @@ begin
   CheckList.Free;
   CloseAction:= caFree;
   frmProductCategory := nil;
+  dmInventory.CloseProductsCategory;
 end;
 
 procedure TfrmProductCategory.FormCreate(Sender: TObject);
 begin
-  dmInventory.OpenProductsCategory;
+  dmInventory.OpenProductsCategory([]);
   DataSource1.dataset := dmInventory.qryProductCategory;  
   //DataSource1.OnStateChange:= @dmInventory.DataSource1StateChange;
                                                               
@@ -283,13 +355,16 @@ begin
 
   edtFilter.button.Action := actClearFilter;
   temp_id := -1;
+
+  toolbutton10.caption := '';
+  toolbutton11.caption := '';
 end;
 
 procedure TfrmProductCategory.Timer1Timer(Sender: TObject);
 begin 
   Timer1.Enabled:= False;
-  dmInventory.SQLWhereProductCategory.AndCondition( 'PRODUCT_CATEGORY_NAME containing '''+edtFilter.Text+'''' );
-  ShowMessage(dmInventory.qryProductCategory.SQL.Text);
+  CheckList.Clear;
+  dmInventory.OpenProductsCategory([edtFilter.Text]);
 end;
 
 procedure TfrmProductCategory.SetChecked(AChecked: Boolean);

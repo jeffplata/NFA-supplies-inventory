@@ -2,18 +2,18 @@ object frmProductCategory: TfrmProductCategory
   Left = 584
   Height = 240
   Top = 271
-  Width = 385
+  Width = 612
   Caption = 'Product Category'
   ClientHeight = 240
-  ClientWidth = 385
+  ClientWidth = 612
   OnClose = FormClose
   OnCreate = FormCreate
-  LCLVersion = '2.0.12.0'
+  LCLVersion = '2.0.10.0'
   object DBGrid1: TDBGrid
     Left = 0
     Height = 214
     Top = 26
-    Width = 385
+    Width = 612
     Align = alClient
     Color = clWindow
     Columns = <>
@@ -31,8 +31,9 @@ object frmProductCategory: TfrmProductCategory
     Left = 0
     Height = 26
     Top = 0
-    Width = 385
+    Width = 612
     Caption = 'ToolBar1'
+    Images = fmMain.ImageList1
     ShowCaptions = True
     TabOrder = 1
     object ToolButton1: TToolButton
@@ -51,33 +52,33 @@ object frmProductCategory: TfrmProductCategory
       Action = actDelete
     end
     object ToolButton4: TToolButton
-      Left = 100
+      Left = 234
       Height = 22
       Top = 2
       Caption = 'ToolButton4'
       Style = tbsDivider
     end
     object ToolButton5: TToolButton
-      Left = 327
+      Left = 462
       Top = 2
       Action = actClose
     end
     object ToolButton6: TToolButton
-      Left = 105
+      Left = 239
       Top = 2
       Caption = 'Tasks'
       DropdownMenu = DropDownMenu1
       Style = tbsButtonDrop
     end
     object ToolButton9: TToolButton
-      Left = 151
+      Left = 286
       Height = 22
       Top = 2
       Caption = 'ToolButton9'
       Style = tbsSeparator
     end
     object edtFilter: TEditButton
-      Left = 159
+      Left = 294
       Height = 23
       Top = 2
       Width = 160
@@ -93,21 +94,38 @@ object frmProductCategory: TfrmProductCategory
       TextHint = '(filter)'
     end
     object ToolButton7: TToolButton
-      Left = 319
+      Left = 454
       Height = 22
       Top = 2
       Caption = 'ToolButton7'
       Style = tbsSeparator
     end
     object ToolButton8: TToolButton
-      Left = 364
+      Left = 100
       Height = 22
       Top = 2
       Caption = 'ToolButton8'
       Style = tbsSeparator
     end
+    object ToolButton10: TToolButton
+      Left = 108
+      Top = 2
+      Action = actMoveUp
+      ParentShowHint = False
+      ShowCaption = False
+      ShowHint = True
+    end
+    object ToolButton11: TToolButton
+      Left = 163
+      Top = 2
+      Action = actMoveDown
+      ParentShowHint = False
+      ShowCaption = False
+      ShowHint = True
+    end
   end
   object ActionList1: TActionList
+    Images = fmMain.ImageList1
     Left = 48
     Top = 119
     object actAdd: TAction
@@ -135,6 +153,7 @@ object frmProductCategory: TfrmProductCategory
     end
     object actExport: TAction
       Caption = 'Export'
+      OnExecute = actExportExecute
     end
     object actCheckAll: TAction
       Caption = 'Check all'
@@ -147,6 +166,16 @@ object frmProductCategory: TfrmProductCategory
     object actClearFilter: TAction
       OnExecute = actClearFilterExecute
       OnUpdate = actClearFilterUpdate
+    end
+    object actMoveUp: TAction
+      Caption = 'Move up'
+      ImageIndex = 4
+      OnExecute = actMoveUpExecute
+    end
+    object actMoveDown: TAction
+      Caption = 'Move down'
+      ImageIndex = 5
+      OnExecute = actMoveDownExecute
     end
   end
   object DataSource1: TDataSource
@@ -172,6 +201,15 @@ object frmProductCategory: TfrmProductCategory
     object MenuItem4: TMenuItem
       Action = actUncheckAll
     end
+    object MenuItem5: TMenuItem
+      Caption = '-'
+    end
+    object MenuItem6: TMenuItem
+      Action = actMoveUp
+    end
+    object MenuItem7: TMenuItem
+      Action = actMoveDown
+    end
   end
   object OpenDialog1: TOpenDialog
     Left = 240
@@ -179,7 +217,6 @@ object frmProductCategory: TfrmProductCategory
   end
   object Timer1: TTimer
     Enabled = False
-    Interval = 2000
     OnTimer = Timer1Timer
     Left = 336
     Top = 56
