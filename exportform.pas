@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, EditBtn,
-  ActnList, fpsexport, DB;
+  ActnList, fpsexport, Variants, fpsTypes, fpspreadsheet, fpsallformats, DB;
 
 type
 
@@ -15,6 +15,7 @@ type
   TfrmExport = class(TForm)
     actExport: TAction;
     actClose: TAction;
+    actExport2: TAction;
     ActionList1: TActionList;
     btnClose: TButton;
     btnImport: TButton;
@@ -22,6 +23,7 @@ type
     Label1: TLabel;
     SaveDialog1: TSaveDialog;
     procedure actCloseExecute(Sender: TObject);
+    procedure actExport2Execute(Sender: TObject);
     procedure actExportExecute(Sender: TObject);
     procedure EditButton1ButtonClick(Sender: TObject);
   private
@@ -55,6 +57,43 @@ begin
   close;
 end;
 
+procedure TfrmExport.actExport2Execute(Sender: TObject);
+var
+  wb : TsWorkbook;
+  ws : TsWorksheet;
+  i, j: integer;
+  bm: TBookMark;
+  v: variant;
+begin
+  wb := TsWorkbook.Create;
+  ws := wb.AddWorksheet('Sheet1');
+
+  bm := fdataset.Bookmark;
+  fdataset.First;
+
+  try
+    for i := 0 to fdataset.FieldCount-1 do
+      ws.WriteText(0, i, fdataset.Fields[i].FieldName);
+    j := 1;
+    while not fdataset.EOF do
+    begin
+      for i := 0 to fdataset.fieldcount-1 do
+      begin
+        v := fdataset.Fields[i].Value;
+        if VarIsNull(v) then v := '[NULL]';
+        ws.WriteText(j, i, v);
+      end;
+      fdataset.Next;
+      inc(j);
+    end;
+    wb.WriteToFile(SaveDialog1.filename, sfOOXML, True);
+  finally
+    wb.Free;
+    fdataset.GotoBookmark(bm);
+  end;
+
+end;
+
 procedure TfrmExport.actExportExecute(Sender: TObject);   
 var
   Exp: TFPSExport;
@@ -77,7 +116,7 @@ begin
     //TODO: manually build the worksheet to allow exclusion of system data
     //system data to be included in the form as checkbox
     exp.FileName:= SaveDialog1.filename;
-    bm := FDataset.Bookmark;    
+    bm := FDataset.Bookmark;
     FDataset.First;
     exp.Execute;
     FDataset.GotoBookmark(bm);
