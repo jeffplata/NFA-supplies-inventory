@@ -220,12 +220,18 @@ begin
 end;
 
 procedure TfrmProductCategory.actExportExecute(Sender: TObject);
-//var
-//  bm: tbookmark;
+var
+  i: Integer;
+  columns: String;
 begin
-  //bm :=  DataSource1.DataSet.Bookmark;
-  TfrmExport.OpenForm(DataSource1.DataSet);
-  //DataSource1.DataSet.GotoBookmark(bm);
+  columns := '';
+  for i := 0 to DBGrid1.Columns.Count-1 do
+    if DBGrid1.Columns[i].FieldName <> '' then
+      if columns = '' then
+        columns := DBGrid1.Columns[i].FieldName
+      else
+        columns := columns+';'+DBGrid1.Columns[i].FieldName;
+  TfrmExport.OpenForm(DataSource1.DataSet, columns);
 end;
 
 procedure TfrmProductCategory.actImportExecute(Sender: TObject);

@@ -19,17 +19,23 @@ type
     ActionList1: TActionList;
     btnClose: TButton;
     btnImport: TButton;
+    chkPK: TCheckBox;
+    chkSystemData: TCheckBox;
     EditButton1: TEditButton;
+    GroupBox1: TGroupBox;
     Label1: TLabel;
     SaveDialog1: TSaveDialog;
     procedure actCloseExecute(Sender: TObject);
     procedure actExport2Execute(Sender: TObject);
     procedure actExportExecute(Sender: TObject);
     procedure EditButton1ButtonClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     FDataset : TDataset;
+    FFieldNames: TStringList;
   public
-    class procedure OpenForm(ADataset: TDataset);
+    class procedure OpenForm(ADataset: TDataset; AColumns: string);
   end;
 
 var
@@ -52,6 +58,16 @@ begin
   end;
 end;
 
+procedure TfrmExport.FormCreate(Sender: TObject);
+begin
+ FFieldNames := TStringList.create;
+end;
+
+procedure TfrmExport.FormDestroy(Sender: TObject);
+begin
+  FFieldNames.free;
+end;
+
 procedure TfrmExport.actCloseExecute(Sender: TObject);
 begin
   close;
@@ -65,6 +81,9 @@ var
   bm: TBookMark;
   v: variant;
 begin
+  if FileExists(SaveDialog1.FileName) then
+    if MessageDlg('Overwrite','File already exists. Overwrite?',mtInformation,[mbYes,mbNo],0) =  mrNo then
+      exit;  //<==
   wb := TsWorkbook.Create;
   ws := wb.AddWorksheet('Sheet1');
 
@@ -72,21 +91,23 @@ begin
   fdataset.First;
 
   try
-    for i := 0 to fdataset.FieldCount-1 do
-      ws.WriteText(0, i, fdataset.Fields[i].FieldName);
+    for i := 0 to FFieldNames.Count-1 do
+      ws.WriteText(0, i, FFieldNames[i]);
     j := 1;
     while not fdataset.EOF do
     begin
-      for i := 0 to fdataset.fieldcount-1 do
+      for i := 0 to FFieldNames.Count-1 do
       begin
-        v := fdataset.Fields[i].Value;
+        //TODO: finalize export
+        v := fdataset.FindField(FFieldNames[i]).Value;
         if VarIsNull(v) then v := '[NULL]';
         ws.WriteText(j, i, v);
       end;
       fdataset.Next;
       inc(j);
     end;
-    wb.WriteToFile(SaveDialog1.filename, sfOOXML, True);
+    wb.WriteToFile(SaveDialog1.filename, sfOOXML, True);  
+    showmessage('Successfully exported.');
   finally
     wb.Free;
     fdataset.GotoBookmark(bm);
@@ -126,11 +147,13 @@ begin
   end;
 end;
 
-class procedure TfrmExport.OpenForm(ADataset: TDataset);
+class procedure TfrmExport.OpenForm(ADataset: TDataset; AColumns: string);
 begin
   with TfrmExport.Create(nil) do
   try
     FDataset := ADataset;
+    FFieldNames.Delimiter:= ';';
+    FFieldNames.DelimitedText:= AColumns;
     showmodal;
   finally
     free;
