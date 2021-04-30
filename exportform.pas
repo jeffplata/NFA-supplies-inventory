@@ -80,7 +80,9 @@ var
   i, j: integer;
   bm: TBookMark;
   v: variant;
+  dt: TFieldType;
 begin
+  if EditButton1.Text = '' then exit;  //<==
   if FileExists(SaveDialog1.FileName) then
     if MessageDlg('Overwrite','File already exists. Overwrite?',mtInformation,[mbYes,mbNo],0) =  mrNo then
       exit;  //<==
@@ -96,18 +98,36 @@ begin
     j := 1;
     while not fdataset.EOF do
     begin
+
+      // include system data?
+      if not chkSystemData.checked then
+        v := fdataset.FieldByName('IS_SYSTEM').Asinteger
+      else
+        v := 0;
+      if v = 1 then
+      begin
+        fdataset.next;
+        continue;
+      end;
+
       for i := 0 to FFieldNames.Count-1 do
       begin
         //TODO: finalize export
         v := fdataset.FindField(FFieldNames[i]).Value;
+        dt := fdataset.FieldByName(FFieldNames[i]).DataType;
         if VarIsNull(v) then v := '[NULL]';
-        ws.WriteText(j, i, v);
+        if VarType(v) = vardate then
+          ws.WriteDateTime(j, i, v)
+        else if VarIsNumeric(v) then
+          ws.WriteNumber(j, i, v)
+        else
+          ws.WriteText(j, i, v);
       end;
       fdataset.Next;
       inc(j);
     end;
     wb.WriteToFile(SaveDialog1.filename, sfOOXML, True);  
-    showmessage('Successfully exported.');
+    showmessage('Data export successful.');
   finally
     wb.Free;
     fdataset.GotoBookmark(bm);
