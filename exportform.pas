@@ -112,7 +112,6 @@ begin
 
       for i := 0 to FFieldNames.Count-1 do
       begin
-        //TODO: finalize export
         v := fdataset.FindField(FFieldNames[i]).Value;
         dt := fdataset.FieldByName(FFieldNames[i]).DataType;
         if VarIsNull(v) then v := '[NULL]';
@@ -154,8 +153,6 @@ begin
     exp.FormatSettings := ExpSettings;
     exp.dataset := FDataset;
     exp.ExportFields.AddField('PRODUCT_CATEGORY_NAME');
-    //TODO: manually build the worksheet to allow exclusion of system data
-    //system data to be included in the form as checkbox
     exp.FileName:= SaveDialog1.filename;
     bm := FDataset.Bookmark;
     FDataset.First;

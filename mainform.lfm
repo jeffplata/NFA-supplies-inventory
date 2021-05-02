@@ -4,7 +4,7 @@ object fmMain: TfmMain
   Top = 174
   Width = 752
   Caption = 'Supplies Inventory System'
-  ClientHeight = 358
+  ClientHeight = 378
   ClientWidth = 752
   DoubleBuffered = True
   Menu = MainMenu1

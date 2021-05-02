@@ -8,7 +8,7 @@ object frmExport: TfrmExport
   ClientWidth = 572
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '2.0.12.0'
+  LCLVersion = '2.0.10.0'
   object Label1: TLabel
     Left = 16
     Height = 15

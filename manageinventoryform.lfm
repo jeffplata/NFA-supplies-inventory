@@ -8,7 +8,7 @@ object frmManageInventory: TfrmManageInventory
   ClientWidth = 533
   OnClose = FormClose
   OnCreate = FormCreate
-  LCLVersion = '2.0.10.0'
+  LCLVersion = '2.0.12.0'
   object ToolBar1: TToolBar
     Left = 0
     Height = 26
@@ -45,17 +45,31 @@ object frmManageInventory: TfrmManageInventory
       Action = actClose
     end
   end
-  object DBGrid1: TDBGrid
+  object DBGrid1: TMyDBGridExt
     Left = 0
     Height = 284
     Top = 26
     Width = 533
     Align = alClient
     Color = clWindow
-    Columns = <>
+    Columns = <    
+      item
+        ButtonStyle = cbsCheckboxColumn
+        Title.Caption = 'Select'
+      end>
     DataSource = DataSource1
     ReadOnly = True
     TabOrder = 1
+  end
+  object DBGrid2: TDBGrid
+    Left = 190
+    Height = 197
+    Top = 75
+    Width = 304
+    Color = clWindow
+    Columns = <>
+    DataSource = DataSource1
+    TabOrder = 2
   end
   object ActionList1: TActionList
     Left = 20

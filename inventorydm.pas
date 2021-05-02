@@ -39,7 +39,7 @@ type
     function CanModifyRecord(ATable: TDataSet): Boolean;
     procedure OpenProductsCategory(const parameters: TVariantArray1);
     procedure CloseProductsCategory;
-    procedure OpenProducts;
+    procedure OpenProducts(const parameters: TVariantArray1);
     procedure CloseProducts;
     procedure DataSource1StateChange( Sender: TObject );
   end;
@@ -48,11 +48,27 @@ var
   dmInventory: TdmInventory;
 
 const
-  CONST_CANNOT_EDIT = 'Editing/Deleting not allowed for this record.';
+  C_CANNOT_EDIT = 'Editing/Deleting not allowed for this record.';
   C_SQL_PRODUCT_CATEGORY = 'SELECT p.PRODUCT_CATEGORY_ID, p.PRODUCT_CATEGORY_NAME, p.VISUAL_SEQ, p.IS_SYSTEM '+
     'from PRODUCT_CATEGORY p '+
     #13#10'where (cast(:PRODUCT_CATEGORY_NAME as varchar(80)) is null) or (p.PRODUCT_CATEGORY_NAME containing :PRODUCT_CATEGORY_NAME) '+
     #13#10'order by p.VISUAL_SEQ, p.PRODUCT_CATEGORY_ID ';
+  C_SQL_PRODUCT = 'select p.PRODUCT_ID, p.PRODUCT_NAME, p.UNIT_MEASURE, '+
+    #13#10'p.PRODUCT_CATEGORY_ID, c.PRODUCT_CATEGORY_NAME '+
+    #13#10'from PRODUCT p '+          
+    #13#10'join PRODUCT_CATEGORY c on c.PRODUCT_CATEGORY_ID=p.PRODUCT_CATEGORY_ID '+
+    #13#10'where (cast(:PRODUCT_NAME as varchar(80)) is null) or (p.PRODUCT_NAME containing :PRODUCT_NAME) ' ;
+  C_SQL_PRODUCT_EDIT = 'update PRODUCT set PRODUCT_NAME = :PRODUCT_NAME, '+
+    ' UNIT_MEASURE = :UNIT_MEASURE,'+
+    ' PRODUCT_CATEGORY_ID = :PRODUCT_CATEGORY_ID'+
+    ' where PRODUCT_ID = :PRODUCT_ID';
+  C_SQL_PRODUCT_INSERT = 'insert into PRODUCT (PRODUCT_ID, PRODUCT_NAME, UNIT_MEASURE, PRODUCT_CATEGORY_ID) '+
+    ' values (:PRODUCT_ID, :PRODUCT_NAME, :UNIT_MEASURE, :PRODUCT_CATEGORY_ID)';
+  C_SQL_PRODUCT_REFRESH = 'select c.PRODUCT_CATEGORY_NAME '+
+    #13#10'from PRODUCT p '+
+    #13#10'join PRODUCT_CATEGORY c on c.PRODUCT_CATEGORY_ID=p.PRODUCT_CATEGORY_ID '+
+    #13#10'where PRODUCT_ID = :PRODUCT_ID' ;
+
 
 implementation
 
@@ -72,9 +88,13 @@ begin
   qryProductCategory.SQL.Add(C_SQL_PRODUCT_CATEGORY);
 
   qryProduct.DataBase := dmMain.Connection.Connection;
-  qryProduct.SQL.add('select p.PRODUCT_ID, p.PRODUCT_NAME, p.UNIT_MEASURE, ');
-  qryProduct.SQL.add('  p.PRODUCT_CATEGORY_ID, c.PRODUCT_CATEGORY_NAME from product p');
-  qryProduct.SQL.add('  join PRODUCT_CATEGORY c on c.PRODUCT_CATEGORY_ID=p.PRODUCT_CATEGORY_ID;');
+  //qryProduct.SQL.add('select p.PRODUCT_ID, p.PRODUCT_NAME, p.UNIT_MEASURE, ');
+  //qryProduct.SQL.add('  p.PRODUCT_CATEGORY_ID, c.PRODUCT_CATEGORY_NAME from product p');
+  //qryProduct.SQL.add('  join PRODUCT_CATEGORY c on c.PRODUCT_CATEGORY_ID=p.PRODUCT_CATEGORY_ID;');
+  qryProduct.SQL.Add(C_SQL_PRODUCT);
+  qryProduct.UpdateSQL.Add(C_SQL_PRODUCT_EDIT);
+  qryProduct.InsertSQL.Add(C_SQL_PRODUCT_INSERT);
+  qryProduct.RefreshSQL.add(C_SQL_PRODUCT_REFRESH);
 
   temp_id := -1;
   DatasetList := TSQLQueryList.Create;
@@ -90,7 +110,7 @@ procedure TdmInventory.qryProductCategoryBeforeDelete(DataSet: TDataSet);
 begin
   if not CanModifyRecord(DataSet) then
   begin
-    raise Exception.Create(CONST_CANNOT_EDIT);
+    raise Exception.Create(C_CANNOT_EDIT);
   end;
 end;
 
@@ -164,6 +184,8 @@ begin
   end;
 
   // IMPORTANT NOTE
+  // If table is ordered by visual sequence, then be sure to
+  //    rebuild index when refreshing
   qryProductCategory.IndexFieldNames:= 'VISUAL_SEQ';
   if qryProductCategory.Active then
     begin
@@ -231,7 +253,7 @@ begin
       ApplyAndCommit(atable);
     end
   else
-    msg := CONST_CANNOT_EDIT;
+    msg := C_CANNOT_EDIT;
 
   //try
   //  //if assigned(ACheckList) and (ACheckList.Count > 0) then
@@ -256,9 +278,9 @@ begin
   //  //else
   //  //  begin     
   //  //    //if not CanModifyRecord(ATable) then
-  //  //    //  raise Exception.Create(CONST_CANNOT_EDIT);
+  //  //    //  raise Exception.Create(C_CANNOT_EDIT);
   //  //    //begin
-  //  //    //  msg := CONST_CANNOT_EDIT;
+  //  //    //  msg := C_CANNOT_EDIT;
   //  //    //  exit;
   //  //    //end;
   //  //    ATable.Delete;
@@ -299,9 +321,25 @@ begin
   Result := not Result;
 end;
 
-procedure TdmInventory.OpenProducts;
+procedure TdmInventory.OpenProducts(const parameters: TVariantArray1);
+var
+  _params : TVariantArray1;
 begin
-  qryProduct.Open;
+  if length(parameters) = 0 then
+    _params := [null]
+  else
+    _params := parameters;
+  with qryProduct do
+  begin
+    ParamByName('PRODUCT_NAME').Value:= _params[0];
+  end;
+
+  if qryProduct.active then
+    qryProduct.refresh
+  else
+    qryProduct.Open;   
+
+  qryProduct.FieldByName('product_category_name').Required := False;
 end;
 
 procedure TdmInventory.CloseProducts;

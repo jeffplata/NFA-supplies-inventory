@@ -183,7 +183,7 @@ begin
 
   //if dbgrid1.DataSource.dataset.fieldbyname('IS_SYSTEM').asinteger = 1 then
   //  begin
-  //    showmessage(CONST_CANNOT_EDIT);
+  //    showmessage(C_CANNOT_EDIT);
   //    exit;
   //  end;
   //
@@ -205,7 +205,7 @@ begin
   table := dbgrid1.DataSource.DataSet;
   if not dmInventory.CanModifyRecord(table) then
     begin
-      showmessage(CONST_CANNOT_EDIT);
+      showmessage(C_CANNOT_EDIT);
       exit;
     end;
 
@@ -242,7 +242,7 @@ end;
 procedure TfrmProductCategory.actMoveDownExecute(Sender: TObject);
 var
   table : tdataset;
-  bm, bm2: tbookmark;
+  bm : tbookmark;
   seq_id, seq_id2: LongInt;
   movingUp : boolean;
 
@@ -271,16 +271,14 @@ begin
   table.edit;
   table.fieldbyname('VISUAL_SEQ').AsInteger := seq_id;
   table.post;
-  bm2 := table.bookmark;
+  //bm2 := table.bookmark;
   table.GotoBookmark(bm);
   table.edit;
   table.FieldByName('VISUAL_SEQ').AsInteger:= seq_id2;
   table.post;
-  //table.gotobookmark(bm2);
 
   dmInventory.ApplyAndCommit(table);
   table.gotobookmark(bm);
-  //dmInventory.qryProductCategory.;
 
 end;
 
@@ -316,15 +314,6 @@ end;
 
 procedure TfrmProductCategory.edtFilterChange(Sender: TObject);
 begin
-  //if edtFilter.Text <> '' then
-  //  Timer1.Enabled:= True;
-  //else
-  //  begin
-  //    Timer1.Enabled := False;
-  //    CheckList.Clear;
-  //    dmInventory.OpenProductsCategory([]);
-  //  end;
-
   timer1.enabled := (edtFilter.text <> '');
   if edtFilter.text = '' then
     begin
@@ -347,7 +336,6 @@ procedure TfrmProductCategory.FormCreate(Sender: TObject);
 begin
   dmInventory.OpenProductsCategory([]);
   DataSource1.dataset := dmInventory.qryProductCategory;  
-  //DataSource1.OnStateChange:= @dmInventory.DataSource1StateChange;
                                                               
   CheckList := TBookmarkList.Create(DBGrid1);
   TColumn(DBGrid1.Columns.Insert(0)).Title.Caption:= 'Select';
@@ -355,9 +343,6 @@ begin
   DBGrid1.OnCellClick:= @DBGrid1CellClick;
   DBGrid1.OnUserCheckboxState:= @DBGrid1UserCheckboxState;
   DBGrid1.AutoAdjustColumns;
-
-  //setup TWhereClause
-
 
   edtFilter.button.Action := actClearFilter;
   temp_id := -1;

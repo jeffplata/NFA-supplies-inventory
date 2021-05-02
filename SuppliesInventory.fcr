@@ -1,12 +1,12 @@
 [db]
 s=localhost
-d=C:\projects\NFA-supplies-inventory\INVENTORY.FDB
+d=C:\projects\NFA Supplies Inventory\INVENTORY.FDB
 u=/BRK/DœÀ7'Ç∞¶‰ŒèC⁄y/BRK/
 p=/BRK/à@A)çµõWf”ø≤"$¶/BRK/
 
 [hilo]
 hi=1
-lo=123
+lo=135
 
 [user]
 u=/BRK/é&o[¿êÍj/BRK/

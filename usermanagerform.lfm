@@ -9,7 +9,7 @@ object frmUserManager: TfrmUserManager
   OnActivate = FormActivate
   OnCreate = FormCreate
   Position = poMainFormCenter
-  LCLVersion = '2.0.10.0'
+  LCLVersion = '2.0.12.0'
   object btnClose: TButton
     Left = 397
     Height = 25
@@ -26,9 +26,9 @@ object frmUserManager: TfrmUserManager
     Height = 240
     Top = 8
     Width = 464
-    ActivePage = tabRoles
+    ActivePage = tabUsers
     Anchors = [akTop, akLeft, akRight, akBottom]
-    TabIndex = 1
+    TabIndex = 0
     TabOrder = 1
     OnChange = PageControl1Change
     object tabUsers: TTabSheet

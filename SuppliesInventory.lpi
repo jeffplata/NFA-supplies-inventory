@@ -26,27 +26,30 @@
       <FormatVersion Value="2"/>
       <Modes Count="0"/>
     </RunParams>
-    <RequiredPackages Count="6">
+    <RequiredPackages Count="7">
       <Item1>
-        <PackageName Value="laz_fpspreadsheet_visual"/>
+        <PackageName Value="mydbgridex"/>
       </Item1>
       <Item2>
-        <PackageName Value="TDI"/>
+        <PackageName Value="virtualtreeview_package"/>
       </Item2>
       <Item3>
-        <PackageName Value="virtualtreeview_package"/>
+        <PackageName Value="laz_fpspreadsheet_visual"/>
       </Item3>
       <Item4>
-        <PackageName Value="pascalscript"/>
+        <PackageName Value="TDI"/>
       </Item4>
       <Item5>
-        <PackageName Value="FCL"/>
+        <PackageName Value="pascalscript"/>
       </Item5>
       <Item6>
-        <PackageName Value="LCL"/>
+        <PackageName Value="FCL"/>
       </Item6>
+      <Item7>
+        <PackageName Value="LCL"/>
+      </Item7>
     </RequiredPackages>
-    <Units Count="25">
+    <Units Count="27">
       <Unit0>
         <Filename Value="SuppliesInventory.pas"/>
         <IsPartOfProject Value="True"/>
@@ -210,6 +213,15 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="exportForm"/>
       </Unit24>
+      <Unit25>
+        <Filename Value="tablemanagement_u.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="TableManagement_u"/>
+      </Unit25>
+      <Unit26>
+        <Filename Value="appglobal_u.pas"/>
+        <IsPartOfProject Value="True"/>
+      </Unit26>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

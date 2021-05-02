@@ -35,7 +35,7 @@ var
 
 implementation
 
-uses DB;
+uses DB, appglobal_u;
 
 
 {$R *.lfm}
@@ -54,6 +54,8 @@ begin
   FUser := TAppUser.Create;
   if GetisConnected then
     FUser.Login();
+
+  AppGlobal.HiLoGenerator := FHiLoGenerator;
 end;
 
 procedure TdmMain.DataModuleDestroy(Sender: TObject);
