@@ -20,7 +20,6 @@ type
     ActionList1: TActionList;
     DataSource1: TDataSource;
     DBGrid1: TMyDBGridExt;
-    DBGrid2: TDBGrid;
     ToolBar1: TToolBar;
     ToolButton1: TToolButton;
     ToolButton2: TToolButton;
@@ -34,7 +33,6 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
   private
-    CheckList: TBookMarkList;
   public
 
   end;
@@ -75,46 +73,47 @@ begin
 end;
 
 procedure TfrmManageInventory.actDeleteExecute(Sender: TObject);
-var
-  table: TDataSet;
-  msg: string;
-  skipped: integer;
-
-  procedure _deletemarked;
-  var
-    i : integer;
-  begin
-    for i := DBGrid1.CheckList.count-1 downto 0 do
-      begin
-        table.GotoBookmark(DBGrid1.CheckList[i]);
-        if CanModifyRecord(table) then
-          begin
-            DBGrid1.CheckList.CurrentRowSelected:= false;
-            table.Delete;
-          end
-        else
-          skipped := skipped + 1;
-      end;
-    ApplyAndCommit(table);
-    if skipped > 0 then
-      showmessage(format('%d record(s) not deleted.',[skipped]));
-  end;
+//var
+//  table: TDataSet;
+//  msg: string;
+//  skipped: integer;
+//
+//  procedure _deletemarked;
+//  var
+//    i : integer;
+//  begin
+//    for i := DBGrid1.CheckList.count-1 downto 0 do
+//      begin
+//        table.GotoBookmark(DBGrid1.CheckList[i]);
+//        if CanModifyRecord(table) then
+//          begin
+//            DBGrid1.CheckList.CurrentRowSelected:= false;
+//            table.Delete;
+//          end
+//        else
+//          skipped := skipped + 1;
+//      end;
+//    ApplyAndCommit(table);
+//    if skipped > 0 then
+//      showmessage(format('%d record(s) not deleted.',[skipped]));
+//  end;
 
 begin
-  msg := '';
-  skipped := 0;
-  table := dbgrid1.datasource.dataset;
-  if DBGrid1.CheckList.Count > 0 then
-    begin
-      if QuestionDlg('Confirm delete', Format('Delete %d record(s) selected?',
-          [DBGrid1.CheckList.Count]),mtConfirmation,[mrYes,mrNO],'')=mrYes then
-        _deletemarked;
-    end
-  else
-    begin
-      DeleteAndCommit(table,msg);
-      if msg <> '' then showmessage(msg);
-    end;
+  Delete( DBGrid1 );
+  //msg := '';
+  //skipped := 0;
+  //table := dbgrid1.datasource.dataset;
+  //if DBGrid1.CheckList.Count > 0 then
+  //  begin
+  //    if QuestionDlg('Confirm delete', Format('Delete %d record(s) selected?',
+  //        [DBGrid1.CheckList.Count]),mtConfirmation,[mrYes,mrNO],'')=mrYes then
+  //      _deletemarked;
+  //  end
+  //else
+  //  begin
+  //    DeleteAndCommit(table,msg);
+  //    if msg <> '' then showmessage(msg);
+  //  end;
 end;
 
 procedure TfrmManageInventory.actEditExecute(Sender: TObject);
@@ -142,14 +141,7 @@ end;
 procedure TfrmManageInventory.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
-  //CheckList.free;
-  //dbgrid1.Columns[0].destroy;
-  //TDBGridExtender(DBGrid2).CheckList.Clear;
-  CheckList.Clear;
-  CheckList.Free;
-  //TDBGridExtender(DBGrid2).FinalCheckColumn1;
-  //CheckList.free;
-  //DBGrid1.CheckList.Clear;
+  DBGrid1.CheckList.Clear;   //IMPORTANT
   CloseAction:= caFree;
   frmManageInventory := nil;
   dmInventory.qryProduct.Close;
@@ -169,20 +161,8 @@ begin
   c := DBGrid1.Columns.Add;
   c.FieldName:= 'PRODUCT_CATEGORY_NAME';
 
-  //c := MyDBGridExt1.Columns.Add;
-  //c.FieldName:= 'PRODUCT_ID';
-  //c := MyDBGridExt1.Columns.Add;
-  //c.FieldName:= 'PRODUCT_NAME';
-  //c := MyDBGridExt1.Columns.Add;
-  //c.FieldName:= 'UNIT_MEASURE';
-  //c := MyDBGridExt1.Columns.Add;
-  //c.FieldName:= 'PRODUCT_CATEGORY_NAME';
-
-
   dmInventory.OpenProducts([]);
   DataSource1.DataSet := dmInventory.qryProduct;
-  CheckList := TBookmarkList.Create(DBGrid2);
-  TDBGridExtender(DBGrid2).InitCheckColumn1(@CheckList);
 
   DBGrid1.AutoAdjustColumns;
 end;

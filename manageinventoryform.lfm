@@ -61,16 +61,6 @@ object frmManageInventory: TfrmManageInventory
     ReadOnly = True
     TabOrder = 1
   end
-  object DBGrid2: TDBGrid
-    Left = 190
-    Height = 197
-    Top = 75
-    Width = 304
-    Color = clWindow
-    Columns = <>
-    DataSource = DataSource1
-    TabOrder = 2
-  end
   object ActionList1: TActionList
     Left = 20
     Top = 91

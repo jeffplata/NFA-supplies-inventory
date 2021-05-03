@@ -5,7 +5,7 @@ unit TableManagement_u;
 interface
 
 uses
-  Classes, SysUtils, DBGrids, Grids, StdCtrls, DB, SQLDB;
+  Classes, SysUtils, DBGrids, Grids, StdCtrls, MyDBGridExt, DB, SQLDB;
 
 type
 
@@ -29,6 +29,7 @@ const
 
   procedure EditAndCommit( ATable: TDataSet; PKname: string; var msg: string;
     new: boolean = false);
+  procedure Delete( ADBGrid: TMyDBGridExt );
   procedure DeleteAndCommit(ATable: TDataSet; var msg: string);
   procedure ApplyAndCommit(ATable: TDataSet);
   procedure CancelAndRollback(ATable: TDataSet);    
@@ -36,7 +37,7 @@ const
 
 implementation
 
-uses appglobal_u;
+uses appglobal_u, Dialogs, Controls;
 
 
 procedure EditAndCommit( ATable: TDataSet; PKname: string; var msg: string; new: boolean = false);
@@ -66,6 +67,49 @@ begin
       CancelAndRollback(atable);
     end;
   end;
+end;
+
+procedure Delete( ADBGrid: TMyDBGridExt );
+var
+  table: TDataSet;
+  msg: string;
+  skipped: integer;
+
+  procedure _deletemarked;
+  var
+    i : integer;
+  begin
+    for i := ADBGrid.CheckList.count-1 downto 0 do
+      begin
+        table.GotoBookmark(ADBGrid.CheckList[i]);
+        if CanModifyRecord(table) then
+          begin
+            ADBGrid.CheckList.CurrentRowSelected:= false;
+            table.Delete;
+          end
+        else
+          skipped := skipped + 1;
+      end;
+    ApplyAndCommit(table);
+    if skipped > 0 then
+      showmessage(format('%d record(s) not deleted.',[skipped]));
+  end;
+
+begin
+  msg := '';
+  skipped := 0;
+  table := ADBGrid.datasource.dataset;
+  if ADBGrid.CheckList.Count > 0 then
+    begin
+      if QuestionDlg('Confirm delete', Format('Delete %d record(s) selected?',
+          [ADBGrid.CheckList.Count]),mtConfirmation,[mrYes,mrNO],'')=mrYes then
+        _deletemarked;
+    end
+  else
+    begin
+      DeleteAndCommit(table,msg);
+      if msg <> '' then showmessage(msg);
+    end;
 end;
 
 procedure DeleteAndCommit(ATable: TDataSet; var msg: string);
@@ -113,14 +157,8 @@ begin
 end;
 
 procedure TDBGridExtender.FinalCheckColumn1;
-//var
-//  i: Integer;
 begin
-  //for i := ColCount-2 downto 0 do
-  //  Columns[i].Destroy;
-  //CheckList.Clear;
-  //Checklist.Free;
-  //TODO: check if bare hack (without doing anything) works
+  CheckList := nil;
 end;
 
 procedure TDBGridExtender.DBGrid1CellClick(Column: TColumn);

@@ -69,10 +69,6 @@ destructor TMyDBGridExt.Destroy;
 var
   i: Integer;
 begin
-  //for i := self.colcount-2 downto 0 do
-  //  self.columns[i].Destroy;
-  //CheckList.Clear;
-
   //IMPORTANT: somewhere outside this code, MyDbgridExt.CheckList must be
   //  cleared. Exmple:
   //  MyDBGridExt1.CheckList.Clear;
