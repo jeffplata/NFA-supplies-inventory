@@ -18,4 +18,10 @@ object dmInventory: TdmInventory
     Left = 48
     Top = 120
   end
+  object qryProdCategoryLku: TSQLQuery
+    FieldDefs = <>
+    Params = <>
+    Left = 48
+    Top = 192
+  end
 end

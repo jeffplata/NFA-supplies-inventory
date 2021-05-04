@@ -6,7 +6,7 @@ interface
 
 uses
   Classes, SysUtils, DB, SQLDB, Forms, Controls, Graphics, Dialogs, ComCtrls,
-  DBGrids, ActnList, TableManagement_u, MyDBGridExt;
+  DBGrids, ActnList, Menus, StdCtrls, TableManagement_u, MyDBGridExt, UITypes;
 
 type
 
@@ -17,21 +17,34 @@ type
     actDelete: TAction;
     actEdit: TAction;
     actClose: TAction;
+    actCheckall: TAction;
+    actUncheckall: TAction;
     ActionList1: TActionList;
     DataSource1: TDataSource;
+    dsCategoriesLku: TDataSource;
     DBGrid1: TMyDBGridExt;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
+    N1: TMenuItem;
+    PopupMenu1: TPopupMenu;
     ToolBar1: TToolBar;
     ToolButton1: TToolButton;
     ToolButton2: TToolButton;
     ToolButton3: TToolButton;
     ToolButton4: TToolButton;
     ToolButton5: TToolButton;
+    ToolButton6: TToolButton;
+    ToolButton7: TToolButton;
     procedure actAddExecute(Sender: TObject);
+    procedure actCheckallExecute(Sender: TObject);
     procedure actCloseExecute(Sender: TObject);
     procedure actDeleteExecute(Sender: TObject);
     procedure actEditExecute(Sender: TObject);
+    procedure actUncheckallExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
+    procedure TaskDialog1ButtonClicked(Sender: TObject;
+      AModalResult: TModalResult; var ACanClose: Boolean);
   private
   public
 
@@ -65,6 +78,11 @@ begin
       EditAndCommit(table, 'PRODUCT_ID', msg, True);
       if msg <> '' then showmessage(msg);
     end;
+end;
+
+procedure TfrmManageInventory.actCheckallExecute(Sender: TObject);
+begin
+  DBGrid1.CheckAll(True);
 end;
 
 procedure TfrmManageInventory.actCloseExecute(Sender: TObject);
@@ -138,6 +156,11 @@ begin
     end;
 end;
 
+procedure TfrmManageInventory.actUncheckallExecute(Sender: TObject);
+begin
+  dbgrid1.checklist.clear;
+end;
+
 procedure TfrmManageInventory.FormClose(Sender: TObject;
   var CloseAction: TCloseAction);
 begin
@@ -145,11 +168,13 @@ begin
   CloseAction:= caFree;
   frmManageInventory := nil;
   dmInventory.qryProduct.Close;
+  dmInventory.qryProdCategoryLku.close;
 end;
 
 procedure TfrmManageInventory.FormCreate(Sender: TObject);
 var
   c: TColumn;
+  m: TMenuItem;
 begin
   //prepare grid
   c := DBGrid1.Columns.Add;
@@ -161,10 +186,28 @@ begin
   c := DBGrid1.Columns.Add;
   c.FieldName:= 'PRODUCT_CATEGORY_NAME';
 
+  dmInventory.qryProdCategoryLku.Open;
+  dsCategoriesLku.dataset := dmInventory.qryProdCategoryLku;
+  with dmInventory.qryProdCategoryLku do
+    while not eof do
+    begin
+      m := TMenuItem.Create(PopupMenu1);
+      m.Caption:= fieldbyname('PRODUCT_CATEGORY_NAME').AsString;
+      PopupMenu1.Items.Add(m);
+      next;
+    end;
+
   dmInventory.OpenProducts([]);
   DataSource1.DataSet := dmInventory.qryProduct;
+  //TODO: implement change category feature
 
   DBGrid1.AutoAdjustColumns;
+end;
+
+procedure TfrmManageInventory.TaskDialog1ButtonClicked(Sender: TObject;
+  AModalResult: TModalResult; var ACanClose: Boolean);
+begin
+
 end;
 
 end.

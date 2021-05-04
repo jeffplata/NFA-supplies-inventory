@@ -15,6 +15,7 @@ object frmManageInventory: TfrmManageInventory
     Top = 0
     Width = 533
     Caption = 'ToolBar1'
+    Images = fmMain.ImageList1
     ShowCaptions = True
     TabOrder = 0
     object ToolButton1: TToolButton
@@ -40,9 +41,21 @@ object frmManageInventory: TfrmManageInventory
       Style = tbsSeparator
     end
     object ToolButton5: TToolButton
-      Left = 108
+      Left = 139
       Top = 2
       Action = actClose
+    end
+    object ToolButton6: TToolButton
+      Left = 108
+      Top = 2
+      ImageIndex = 6
+    end
+    object ToolButton7: TToolButton
+      Left = 131
+      Height = 22
+      Top = 2
+      Caption = 'ToolButton7'
+      Style = tbsSeparator
     end
   end
   object DBGrid1: TMyDBGridExt
@@ -58,6 +71,8 @@ object frmManageInventory: TfrmManageInventory
         Title.Caption = 'Select'
       end>
     DataSource = DataSource1
+    Options = [dgEditing, dgTitles, dgIndicator, dgColumnResize, dgColumnMove, dgColLines, dgRowLines, dgTabs, dgAlwaysShowSelection, dgConfirmDelete, dgCancelOnExit, dgRowHighlight]
+    PopupMenu = PopupMenu1
     ReadOnly = True
     TabOrder = 1
   end
@@ -80,9 +95,34 @@ object frmManageInventory: TfrmManageInventory
       Caption = 'Close'
       OnExecute = actCloseExecute
     end
+    object actCheckall: TAction
+      Caption = 'Check all'
+      OnExecute = actCheckallExecute
+    end
+    object actUncheckall: TAction
+      Caption = 'Uncheck all'
+      OnExecute = actUncheckallExecute
+    end
   end
   object DataSource1: TDataSource
+    Left = 20
+    Top = 168
+  end
+  object PopupMenu1: TPopupMenu
     Left = 104
     Top = 91
+    object MenuItem1: TMenuItem
+      Action = actCheckall
+    end
+    object MenuItem2: TMenuItem
+      Action = actUncheckall
+    end
+    object N1: TMenuItem
+      Caption = '-'
+    end
+  end
+  object dsCategoriesLku: TDataSource
+    Left = 104
+    Top = 168
   end
 end

@@ -17,6 +17,7 @@ type
   TdmInventory = class(TDataModule)
     qryProduct: TSQLQuery;
     qryProductCategory: TSQLQuery;
+    qryProdCategoryLku: TSQLQuery;
     procedure DataModuleCreate(Sender: TObject);
     procedure DataModuleDestroy(Sender: TObject);
     procedure qryProductCategoryBeforeDelete(DataSet: TDataSet);
@@ -68,6 +69,7 @@ const
     #13#10'from PRODUCT p '+
     #13#10'join PRODUCT_CATEGORY c on c.PRODUCT_CATEGORY_ID=p.PRODUCT_CATEGORY_ID '+
     #13#10'where PRODUCT_ID = :PRODUCT_ID' ;
+  C_SQL_PRODUCT_DELETE = 'delete from PRODUCT where PRODUCT_ID=:PRODUCT_ID';
 
 
 implementation
@@ -80,21 +82,19 @@ uses mainDM, Variants, Forms, Dialogs, Controls;
 
 procedure TdmInventory.DataModuleCreate(Sender: TObject);
 begin
-  qryProductCategory.DataBase := dmMain.Connection.Connection; 
-  //qryProductCategory.SQL.add('select p.PRODUCT_CATEGORY_ID, p.PRODUCT_CATEGORY_NAME, p.VISUAL_SEQ, p.IS_SYSTEM ');
-  //qryProductCategory.SQL.add('  from PRODUCT_CATEGORY p ');
-  //qryProductCategory.SQL.add('  order by p.PRODUCT_CATEGORY_ID');
-  //qryProductCategory.BeforeDelete:= @qryProductCategoryBeforeDelete;
+  qryProductCategory.DataBase := dmMain.Connection.Connection;
   qryProductCategory.SQL.Add(C_SQL_PRODUCT_CATEGORY);
 
   qryProduct.DataBase := dmMain.Connection.Connection;
-  //qryProduct.SQL.add('select p.PRODUCT_ID, p.PRODUCT_NAME, p.UNIT_MEASURE, ');
-  //qryProduct.SQL.add('  p.PRODUCT_CATEGORY_ID, c.PRODUCT_CATEGORY_NAME from product p');
-  //qryProduct.SQL.add('  join PRODUCT_CATEGORY c on c.PRODUCT_CATEGORY_ID=p.PRODUCT_CATEGORY_ID;');
   qryProduct.SQL.Add(C_SQL_PRODUCT);
   qryProduct.UpdateSQL.Add(C_SQL_PRODUCT_EDIT);
   qryProduct.InsertSQL.Add(C_SQL_PRODUCT_INSERT);
   qryProduct.RefreshSQL.add(C_SQL_PRODUCT_REFRESH);
+  qryProduct.DeleteSQL.add(C_SQL_PRODUCT_DELETE);
+
+  //Product category lookup      
+  qryProdCategoryLku.DataBase := dmMain.Connection.Connection;
+  qryProdCategoryLku.SQL.Add('select PRODUCT_CATEGORY_ID, PRODUCT_CATEGORY_NAME from PRODUCT_CATEGORY order by upper(PRODUCT_CATEGORY_NAME)');
 
   temp_id := -1;
   DatasetList := TSQLQueryList.Create;

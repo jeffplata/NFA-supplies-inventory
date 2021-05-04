@@ -5,8 +5,8 @@ unit MyDBGridExt;
 interface
 
 uses
-  Classes, SysUtils, LResources, Forms, Controls, Graphics, Dialogs, DBGrids,
-  StdCtrls, Grids;
+  Classes, SysUtils, DB, LResources, Forms, Controls, Graphics, Dialogs,
+  DBGrids, StdCtrls, Grids;
 
 type
 
@@ -15,7 +15,8 @@ type
   TMyDBGridExt = class(TDBGrid) 
     procedure DBGrid1CellClick(Column: TColumn);
     procedure DBGrid1UserCheckboxState(Sender: TObject; Column: TColumn;
-      var AState: TCheckboxState);
+      var AState: TCheckboxState);    
+    procedure CheckAll(AChecked: Boolean);
   private
 
   protected
@@ -66,8 +67,8 @@ begin
 end;
 
 destructor TMyDBGridExt.Destroy;
-var
-  i: Integer;
+//var
+  //i: Integer;
 begin
   //IMPORTANT: somewhere outside this code, MyDbgridExt.CheckList must be
   //  cleared. Exmple:
@@ -79,6 +80,25 @@ begin
   //  closed.
   CheckList.Free;
   inherited destroy;
+end;
+
+procedure TMyDBGridExt.CheckAll(AChecked: Boolean);
+var
+  bm: TBookMark;
+begin
+  with self.DataSource.DataSet do
+    begin
+      DisableControls;
+      bm := Bookmark;
+      First;
+      while not eof do
+        begin
+          CheckList.CurrentRowSelected:= AChecked;
+          Next;
+        end;
+        GotoBookmark(bm);
+      EnableControls;
+    end;
 end;
 
 end.
