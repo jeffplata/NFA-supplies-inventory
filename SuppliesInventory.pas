@@ -12,7 +12,8 @@ uses
   UserManagerU, user_BOM, RoleEditForm, base_BOM, UserChangePassForm,
   IssuanceForm, ReceiptsForm, ManageInventoryForm, inventoryDM,
   ProductCategoryForm, dataset_helper, BookmarkList_helper, importForm,
-  SQLWhereClause, exportForm, TableManagement_u, appglobal_u;
+  SQLWhereClause, exportForm, TableManagement_u, appglobal_u, lazcontrols,
+  selectProdCategory_u;
 
 {$R *.res}
 

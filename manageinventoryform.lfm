@@ -48,6 +48,7 @@ object frmManageInventory: TfrmManageInventory
     object ToolButton6: TToolButton
       Left = 108
       Top = 2
+      Action = actChangeCategory
       ImageIndex = 6
     end
     object ToolButton7: TToolButton
@@ -102,6 +103,9 @@ object frmManageInventory: TfrmManageInventory
     object actUncheckall: TAction
       Caption = 'Uncheck all'
       OnExecute = actUncheckallExecute
+    end
+    object actChangeCategory: TAction
+      OnExecute = actChangeCategoryExecute
     end
   end
   object DataSource1: TDataSource

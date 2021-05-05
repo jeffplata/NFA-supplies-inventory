@@ -95,6 +95,7 @@ begin
   //Product category lookup      
   qryProdCategoryLku.DataBase := dmMain.Connection.Connection;
   qryProdCategoryLku.SQL.Add('select PRODUCT_CATEGORY_ID, PRODUCT_CATEGORY_NAME from PRODUCT_CATEGORY order by upper(PRODUCT_CATEGORY_NAME)');
+  qryProdCategoryLku.Open;
 
   temp_id := -1;
   DatasetList := TSQLQueryList.Create;
@@ -103,6 +104,7 @@ end;
 
 procedure TdmInventory.DataModuleDestroy(Sender: TObject);
 begin
+  qryProdCategoryLku.Close;
   DatasetList.Free;
 end;
 

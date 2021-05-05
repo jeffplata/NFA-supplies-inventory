@@ -18,6 +18,7 @@ type
     actEdit: TAction;
     actClose: TAction;
     actCheckall: TAction;
+    actChangeCategory: TAction;
     actUncheckall: TAction;
     ActionList1: TActionList;
     DataSource1: TDataSource;
@@ -36,6 +37,7 @@ type
     ToolButton6: TToolButton;
     ToolButton7: TToolButton;
     procedure actAddExecute(Sender: TObject);
+    procedure actChangeCategoryExecute(Sender: TObject);
     procedure actCheckallExecute(Sender: TObject);
     procedure actCloseExecute(Sender: TObject);
     procedure actDeleteExecute(Sender: TObject);
@@ -43,8 +45,6 @@ type
     procedure actUncheckallExecute(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
-    procedure TaskDialog1ButtonClicked(Sender: TObject;
-      AModalResult: TModalResult; var ACanClose: Boolean);
   private
   public
 
@@ -55,7 +55,7 @@ var
 
 implementation
 
-uses inventoryDM;
+uses inventoryDM, selectProdCategory_u;
 
 {$R *.lfm}
 
@@ -78,6 +78,67 @@ begin
       EditAndCommit(table, 'PRODUCT_ID', msg, True);
       if msg <> '' then showmessage(msg);
     end;
+end;
+
+procedure TfrmManageInventory.actChangeCategoryExecute(Sender: TObject);
+var
+  s: String;  
+  table: TDataSet;
+  msg: string;
+  skipped: integer;
+  ADBGrid: TMyDBGridExt;
+
+  procedure _changemarked;
+  var
+    i : integer;
+  begin
+    for i := ADBGrid.CheckList.count-1 downto 0 do
+      begin
+        table.GotoBookmark(ADBGrid.CheckList[i]);
+        if CanModifyRecord(table) then
+          begin
+            ADBGrid.CheckList.CurrentRowSelected:= false;
+            table.Delete;
+          end
+        else
+          skipped := skipped + 1;
+      end;
+    //ApplyAndCommit(table);
+    if skipped > 0 then
+      showmessage(format('%d record(s) not deleted.',[skipped]));
+  end;
+
+begin
+
+  msg := '';
+  skipped := 0;
+  ADBGrid := DBGrid1;
+  table := ADBGrid.datasource.dataset;
+  s := TfrmSelectProdCategory.SelectedItem;
+  if s = '' then exit; //<===
+
+  if ADBGrid.CheckList.Count > 0 then
+    begin
+      if QuestionDlg('Confirm change', Format('Change %d record(s) selected?',
+          [ADBGrid.CheckList.Count]),mtConfirmation,[mrYes,mrNO],'')=mrYes then
+        _changemarked;
+    end
+  else
+    begin
+ 
+      if not CanModifyRecord(table) then
+        begin
+          showmessage(C_CANNOT_EDIT);
+          exit;
+        end;
+
+      table.Edit;
+      table.fieldbyname('PRODUCT_CATEGORY_ID').asinteger := strtoint(s);
+      EditAndCommit(table, 'PRODUCT_ID', msg);
+      if msg <> '' then showmessage(msg);
+
+    end;
+
 end;
 
 procedure TfrmManageInventory.actCheckallExecute(Sender: TObject);
@@ -202,12 +263,6 @@ begin
   //TODO: implement change category feature
 
   DBGrid1.AutoAdjustColumns;
-end;
-
-procedure TfrmManageInventory.TaskDialog1ButtonClicked(Sender: TObject;
-  AModalResult: TModalResult; var ACanClose: Boolean);
-begin
-
 end;
 
 end.

@@ -26,30 +26,33 @@
       <FormatVersion Value="2"/>
       <Modes Count="0"/>
     </RunParams>
-    <RequiredPackages Count="7">
+    <RequiredPackages Count="8">
       <Item1>
-        <PackageName Value="mydbgridex"/>
+        <PackageName Value="LazControls"/>
       </Item1>
       <Item2>
-        <PackageName Value="virtualtreeview_package"/>
+        <PackageName Value="mydbgridex"/>
       </Item2>
       <Item3>
-        <PackageName Value="laz_fpspreadsheet_visual"/>
+        <PackageName Value="virtualtreeview_package"/>
       </Item3>
       <Item4>
-        <PackageName Value="TDI"/>
+        <PackageName Value="laz_fpspreadsheet_visual"/>
       </Item4>
       <Item5>
-        <PackageName Value="pascalscript"/>
+        <PackageName Value="TDI"/>
       </Item5>
       <Item6>
-        <PackageName Value="FCL"/>
+        <PackageName Value="pascalscript"/>
       </Item6>
       <Item7>
-        <PackageName Value="LCL"/>
+        <PackageName Value="FCL"/>
       </Item7>
+      <Item8>
+        <PackageName Value="LCL"/>
+      </Item8>
     </RequiredPackages>
-    <Units Count="27">
+    <Units Count="28">
       <Unit0>
         <Filename Value="SuppliesInventory.pas"/>
         <IsPartOfProject Value="True"/>
@@ -222,6 +225,13 @@
         <Filename Value="appglobal_u.pas"/>
         <IsPartOfProject Value="True"/>
       </Unit26>
+      <Unit27>
+        <Filename Value="selectprodcategory_u.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="frmSelectProdCategory"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="selectProdCategory_u"/>
+      </Unit27>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
