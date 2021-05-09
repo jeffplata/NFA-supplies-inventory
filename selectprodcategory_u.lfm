@@ -50,6 +50,7 @@ object frmSelectProdCategory: TfrmSelectProdCategory
     Width = 357
     Anchors = [akTop, akLeft, akRight, akBottom]
     ItemHeight = 0
+    OnDblClick = ListBox1DblClick
     TabOrder = 3
   end
   object DataSource1: TDataSource

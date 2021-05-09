@@ -76,6 +76,7 @@ object frmManageInventory: TfrmManageInventory
     PopupMenu = PopupMenu1
     ReadOnly = True
     TabOrder = 1
+    OnDblClick = DBGrid1DblClick
   end
   object ActionList1: TActionList
     Left = 20

@@ -20,6 +20,7 @@ type
     ListFilterEdit1: TListFilterEdit;
     procedure Button2Click(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure ListBox1DblClick(Sender: TObject);
   private
 
   public
@@ -56,6 +57,11 @@ begin
   ListFilterEdit1.FilteredListbox := ListBox1;
 end;
 
+procedure TfrmSelectProdCategory.ListBox1DblClick(Sender: TObject);
+begin
+  if tlistbox(sender).ItemIndex <> -1 then button1.Click;
+end;
+
 procedure TfrmSelectProdCategory.Button2Click(Sender: TObject);
 begin
   close;
@@ -71,8 +77,8 @@ begin
     if (Showmodal = mrOk) then
     begin
       ind := listbox1.itemindex;
-      //result := Inttostr(qword(ListBox1.items.Objects[ind]))+','+quotedstr(ListBox1.items[ind]);
-      result := Inttostr(qword(ListBox1.items.Objects[ind]));
+      if ind = -1 then result := ''
+      else result := Inttostr(qword(ListBox1.items.Objects[ind]));
     end;
   finally
     Free;

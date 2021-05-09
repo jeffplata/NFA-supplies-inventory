@@ -229,6 +229,7 @@
         <Filename Value="selectprodcategory_u.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="frmSelectProdCategory"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="selectProdCategory_u"/>
       </Unit27>

@@ -43,6 +43,7 @@ type
     procedure actDeleteExecute(Sender: TObject);
     procedure actEditExecute(Sender: TObject);
     procedure actUncheckallExecute(Sender: TObject);
+    procedure DBGrid1DblClick(Sender: TObject);
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
   private
@@ -98,14 +99,16 @@ var
         if CanModifyRecord(table) then
           begin
             ADBGrid.CheckList.CurrentRowSelected:= false;
-            table.Delete;
+            table.Edit;
+            table.fieldbyname('PRODUCT_CATEGORY_ID').asinteger := strtoint(s);
+            table.Post;
           end
         else
           skipped := skipped + 1;
       end;
-    //ApplyAndCommit(table);
+    ApplyAndCommit(table);
     if skipped > 0 then
-      showmessage(format('%d record(s) not deleted.',[skipped]));
+      showmessage(format('%d record(s) not modified.',[skipped]));
   end;
 
 begin
@@ -152,47 +155,8 @@ begin
 end;
 
 procedure TfrmManageInventory.actDeleteExecute(Sender: TObject);
-//var
-//  table: TDataSet;
-//  msg: string;
-//  skipped: integer;
-//
-//  procedure _deletemarked;
-//  var
-//    i : integer;
-//  begin
-//    for i := DBGrid1.CheckList.count-1 downto 0 do
-//      begin
-//        table.GotoBookmark(DBGrid1.CheckList[i]);
-//        if CanModifyRecord(table) then
-//          begin
-//            DBGrid1.CheckList.CurrentRowSelected:= false;
-//            table.Delete;
-//          end
-//        else
-//          skipped := skipped + 1;
-//      end;
-//    ApplyAndCommit(table);
-//    if skipped > 0 then
-//      showmessage(format('%d record(s) not deleted.',[skipped]));
-//  end;
-
 begin
   Delete( DBGrid1 );
-  //msg := '';
-  //skipped := 0;
-  //table := dbgrid1.datasource.dataset;
-  //if DBGrid1.CheckList.Count > 0 then
-  //  begin
-  //    if QuestionDlg('Confirm delete', Format('Delete %d record(s) selected?',
-  //        [DBGrid1.CheckList.Count]),mtConfirmation,[mrYes,mrNO],'')=mrYes then
-  //      _deletemarked;
-  //  end
-  //else
-  //  begin
-  //    DeleteAndCommit(table,msg);
-  //    if msg <> '' then showmessage(msg);
-  //  end;
 end;
 
 procedure TfrmManageInventory.actEditExecute(Sender: TObject);
@@ -220,6 +184,11 @@ end;
 procedure TfrmManageInventory.actUncheckallExecute(Sender: TObject);
 begin
   dbgrid1.checklist.clear;
+end;
+
+procedure TfrmManageInventory.DBGrid1DblClick(Sender: TObject);
+begin
+  actEdit.Execute;
 end;
 
 procedure TfrmManageInventory.FormClose(Sender: TObject;
